@@ -247,12 +247,14 @@ function display_products_in_admin() {
     confirm($query);
     while($row = fetch_array($query)) {
         $category_title = display_product_category_title($row['product_category_id']);
+        $brand_name = display_brand_title($row['product_brand_id']);
         $product = <<<DELIMETER
         <tr>
             <td>{$row['product_id']}</td>
             <td><b>{$row['product_title']}</b><br>
                 <img src=../../resources/uploads/{$row['product_image']} width="100" alt= /> </td>
             <td>{$category_title}</td>
+            <td>{$brand_name}</td>
             <td>{$row['product_price']}</td>
             <td>{$row['product_quantity']}</td>
             <td><a class='btn btn-warning' href='index.php?edit_product&id={$row['product_id']}'>Edit</a></td>
@@ -274,12 +276,28 @@ function get_add_product_categories() {
     }
 }
 
+function get_edit_product_categories($category_id) {
+    $query = query("SELECT * FROM categories WHERE cat_id != {$category_id}");
+    confirm($query);
+    while($row = fetch_array($query)) {
+        echo "<option value={$row['cat_id']}>{$row['cat_title']}</option>";
+    }
+}
+
 function get_add_product_brands() {
     $query = query("SELECT * FROM brands");
     confirm($query);
     while($row = fetch_array($query)) {
         $brand = "<option value={$row['id']}>{$row['brand_name']}</option>";
         echo $brand;
+    }
+}
+
+function get_edit_product_brands($brand_id) {
+    $query = query("SELECT * FROM brands WHERE id != {$brand_id}");
+    confirm($query);
+    while($row = fetch_array($query)) {
+        echo "<option value={$row['id']}>{$row['brand_name']}</option>";
     }
 }
 
@@ -295,7 +313,7 @@ function add_product() {
 
         move_uploaded_file($image_tmp_location, UPLOAD_DIRECTORY.DS.$product_image);
 
-    $query = query("INSERT INTO products(product_title, product_category_id, product_price, product_quantity, product_description, short_desc, product_image, product_keywords) VALUES('{$product['product_title']}', {$product['product_category']}, {$product['product_price']}, {$product['product_quantity']}, '{$product['product_description']}', '{$short_desc}', '{$product_image}', '{$product['product_keywords']}')");
+    $query = query("INSERT INTO products(product_title, product_category_id, product_brand_id, product_price, product_quantity, product_description, short_desc, product_image, product_keywords) VALUES('{$product['product_title']}', {$product['product_category']}, {$product['product_brand']}, {$product['product_price']}, {$product['product_quantity']}, '{$product['product_description']}', '{$short_desc}', '{$product_image}', '{$product['product_keywords']}')");
     $last_id = last_id();
     confirm($query);
     set_message("New Product with ID of {$last_id} was just added!");
@@ -322,7 +340,7 @@ function edit_product() {
     
         move_uploaded_file($image_tmp_location, UPLOAD_DIRECTORY.DS.$product_image);
 
-    $query = query("UPDATE products SET product_title = '{$product['product_title']}', product_category_id = {$product['product_category']}, product_description = '{$product['product_description']}', product_price = {$product['product_price']}, product_quantity = {$product['product_quantity']}, short_desc = '{$short_desc}', product_image = '{$product_image}', product_keywords = '{$product['product_keywords']}' WHERE product_id = " . $_GET['id']);
+    $query = query("UPDATE products SET product_title = '{$product['product_title']}', product_category_id = {$product['product_category']}, product_brand_id = {$product['product_brand']}, product_description = '{$product['product_description']}', product_price = {$product['product_price']}, product_quantity = {$product['product_quantity']}, short_desc = '{$short_desc}', product_image = '{$product_image}', product_keywords = '{$product['product_keywords']}' WHERE product_id = " . $_GET['id']);
     confirm($query);
 
     set_message("Product has been updated.");
@@ -353,18 +371,32 @@ function display_product_category_title($product_category_id) {
     }
 }
 
-function display_categories() {
-    $query = query("SELECT * FROM categories");
+function display_brand_title($brand_id) {
+    $query = query("SELECT * FROM brands WHERE id = {$brand_id}");
     confirm($query);
     while($row = fetch_array($query)) {
-        $category = <<<DELIMETER
-        <tr>
-            <td>{$row['cat_id']}</td>
-            <td>{$row['cat_title']}</td>
-            <td><a class='btn btn-danger' href='../../resources/templates/back/delete_category.php?id={$row['cat_id']}'>Delete</a></td>
-        </tr>
-        DELIMETER;
-        echo $category;
+        return $row['brand_name'];
+    }
+}
+
+function display_categories() {
+    $query = query("SELECT * FROM categories");
+
+    confirm($query);
+    while($row = fetch_array($query)) {
+        $query2 = query("SELECT brand_name FROM brands WHERE id = {$row['brand_id']}");
+        while($brand = fetch_array($query2)) {
+            $category = <<<DELIMETER
+            <tr>
+                <td>{$row['cat_id']}</td>
+                <td>{$row['cat_title']}</td>
+                <td>{$row['cat_subcategory1']}</td>
+                <td>{$brand['brand_name']}</td>
+                <td><a class='btn btn-danger' href='../../resources/templates/back/delete_category.php?id={$row['cat_id']}'>Delete</a></td>
+            </tr>
+            DELIMETER;
+            echo $category;
+        }
     }
 }
 
@@ -384,9 +416,11 @@ function display_brands() {
 
 function create_category() {
     if(isset($_POST['submit'])) {
-        if(!empty($_POST['title'])) {
+        if(!empty($_POST['title']) && !empty($_POST['male_female']) && !empty($_POST['brand_name'])) {
             $title = $_POST['title'];
-            $query = query("INSERT INTO categories(cat_title) VALUE('{$title}')");
+            $gender = $_POST['male_female'];
+            $brand = $_POST['brand_name'];
+            $query = query("INSERT INTO categories(cat_title, cat_subcategory1, brand_id) VALUE('{$title}', '{$gender}', {$brand})");
             confirm($query);
             redirect("index.php?categories");
             set_message("New category is created!");

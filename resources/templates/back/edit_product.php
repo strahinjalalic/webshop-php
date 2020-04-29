@@ -14,7 +14,7 @@ if(isset($_GET['id'])) {
    Edit Product
 </h1>
 </div>
-<form action="" method="post" enctype="multipart/form-data">
+<form action="" method="POST" enctype="multipart/form-data">
 <div class="col-md-8">
 <div class="form-group">
     <label for="product-title">Product Title </label>
@@ -24,6 +24,7 @@ if(isset($_GET['id'])) {
            <label for="product-title">Product Description</label>
       <textarea name="product_description" id="" cols="30" rows="10" class="form-control"><?php echo $product['product_description']; ?></textarea>
     </div>
+    
     <div class="form-group row">
       <div class="col-xs-3">
         <label for="product-price">Product Price</label>
@@ -39,11 +40,20 @@ if(isset($_GET['id'])) {
   
     <div class="form-group">
          <label for="product-title">Product Category</label>
-        <select name="product_category" id="" class="form-control">
+         <select name="product_category" id="" class="form-control">
             <option value="<?php echo $product['product_category_id']; ?>"><?php echo display_product_category_title($product['product_category_id']) ?></option>
-            <?php get_add_product_categories(); ?>
-        </select>
-</div>
+            <?php get_edit_product_categories($product['product_category_id']); ?>
+         </select>
+    </div>
+
+    <div class="form-group">
+         <label for="product_brand">Product Brand</label>
+         <select name="product_brand" id="" class="form-control">
+            <option value="<?php echo $product['product_brand_id']; ?>"><?php echo display_brand_title($product['product_brand_id']) ?></option>
+            <?php
+            get_edit_product_brands($product['product_brand_id']); ?>
+         </select>
+    </div>
 
     <div class="form-group">
       <label for="product-title">Product Quantity</label>

@@ -10,6 +10,7 @@
            <th>ID</th>
            <th>Title</th>
            <th>Category</th>
+           <th>Brand</th>
            <th>Price</th>
            <th>Quantity</th>
            <th>Edit</th>
