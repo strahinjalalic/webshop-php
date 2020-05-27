@@ -1,6 +1,5 @@
 <h1 class="page-header">
-   All Products
-
+   Reports
 </h1>
 
 <h3 class="bg-success"><?php display_message(); ?></h3>

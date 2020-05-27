@@ -30,6 +30,13 @@ if(isset($_GET['id'])) {
         <label for="product-price">Product Price</label>
         <input type="number" name="product_price" class="form-control" size="60" value="<?php echo $product['product_price']; ?>">
       </div>
+      <div class="col-xs-4" style="float: right;">
+        <div class="custom-control custom-radio">
+              <label for="product_gender">Select Gender</label><br>
+                  <input type="radio" name="product_gender" value="1" class="custom-control-input" <?php echo ($product['product_gender_id'] == 1) ? 'checked' : '' ?>>Muskarci <br>
+                  <input type="radio" name="product_gender" value="2" class="custom-control-input" <?php echo ($product['product_gender_id'] == 2) ? 'checked' : '' ?>>Zene <br>
+          </div>
+      </div>
     </div>
 </div>
 

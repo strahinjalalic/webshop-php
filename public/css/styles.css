@@ -174,3 +174,52 @@ textarea#contact {
   color: #9d9d9d;
   background-color: #333333;
 }
+
+.cat_man {
+  font-size: 14px;
+  color: maroon;
+  padding-left: 10px;
+}
+
+.brand_man {
+  list-style-type: none;
+  padding-left: 10px;
+  color: black;
+}
+
+.list_gender {
+  border: 1px solid darkgrey;
+  font-size: 18px;
+  border-radius: 3px;
+  padding-left: 5px;
+  width: 70%;
+  cursor: default;
+}
+
+.pagination_btn {
+  color: white;
+  background-color: #517670;
+  padding: 8px;
+  border-radius: 7px;
+  margin: 1px;
+}
+
+.pagination_btn:hover {
+  color: white;
+}
+
+#bolded {
+  margin-left: 4px;
+}
+
+.next_prev {
+  margin: 5px;
+  background: #213740;
+  color: white;
+  padding: 8px;
+  border-radius: 5px;
+}
+
+.next_prev:hover {
+  color: white;
+}

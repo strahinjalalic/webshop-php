@@ -4,6 +4,7 @@ require_once('../../config.php');
 if(isset($_GET['id'])) {
     global $connection;
     $query = query("DELETE FROM products WHERE product_id = " . $_GET['id']);
+    //$query2 = query("DELETE FROM categories WHERE")
     confirm($query);
     fetch_array($query);
     if(mysqli_affected_rows($connection) == 1) {

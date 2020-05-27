@@ -16,9 +16,5 @@ require_once(TEMPLATE_FRONT . DS . "header.php");  ?>
                 </div>
             </div>
         </div>
-
-        <ul class='pager'>
-
-        </ul>
     </div>
 <?php require_once(TEMPLATE_FRONT . DS . "footer.php"); ?>
