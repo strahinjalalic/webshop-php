@@ -5,7 +5,7 @@
             <?php get_categories_man(); ?>
         </ul>
         <ul class="list-group list_gender" id='list_woman'>Woman
-            <?php //get_categories_woman(); ?>
+            <?php get_categories_woman(); ?>
         </ul>
     </div>
 </div>

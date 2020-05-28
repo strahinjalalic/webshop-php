@@ -30,13 +30,6 @@ if(isset($_GET['id'])) {
         <label for="product-price">Product Price</label>
         <input type="number" name="product_price" class="form-control" size="60" value="<?php echo $product['product_price']; ?>">
       </div>
-      <div class="col-xs-4" style="float: right;">
-        <div class="custom-control custom-radio">
-              <label for="product_gender">Select Gender</label><br>
-                  <input type="radio" name="product_gender" value="1" class="custom-control-input" <?php echo ($product['product_gender_id'] == 1) ? 'checked' : '' ?>>Muskarci <br>
-                  <input type="radio" name="product_gender" value="2" class="custom-control-input" <?php echo ($product['product_gender_id'] == 2) ? 'checked' : '' ?>>Zene <br>
-          </div>
-      </div>
     </div>
 </div>
 
@@ -44,15 +37,6 @@ if(isset($_GET['id'])) {
      <div class="form-group">
         <input type="submit" name="update" class="btn btn-primary btn-lg" value="Update">
     </div>
-  
-    <div class="form-group">
-         <label for="product-title">Product Category</label>
-         <select name="product_category" id="" class="form-control">
-            <option value="<?php echo $product['product_category_id']; ?>"><?php echo display_product_category_title($product['product_category_id']) ?></option>
-            <?php get_edit_product_categories($product['product_category_id']); ?>
-         </select>
-    </div>
-
     <div class="form-group">
          <label for="product_brand">Product Brand</label>
          <select name="product_brand" id="" class="form-control">

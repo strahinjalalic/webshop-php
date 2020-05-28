@@ -139,25 +139,32 @@ function get_categories_man() {
     $categories = "";
     while($row = mysqli_fetch_assoc($select_category)) {
         $categories .= "<ul class='list-group cat_man'>{$row['title']}";
-            $select_brand_id = query("SELECT brand_id FROM categories WHERE warderobe_id={$row['id']} AND gender_id=1");
-            while($row2 = mysqli_fetch_array($select_brand_id)){
-                $display_brand = query("SELECT brand_name FROM brands WHERE id = {$row2['brand_id']}");
-                while($row3 = mysqli_fetch_array($display_brand)) {
-                    $categories .= "<li class='brand_man'>{$row3['brand_name']}</li>";
-                }
-            }
+        $select_brand_name = query("SELECT brand_name FROM brands WHERE warderobe_id={$row['id']}");
+        while($row2 = mysqli_fetch_array($select_brand_name)){
+            $categories .= "<li class='brand_man'>{$row2['brand_name']}</li>";
+        }
         $categories .= "</ul>";
-}
+    }
     echo $categories;
 }
 
 function get_categories_woman() {
-
+    $select_category = query("SELECT * FROM warderobes WHERE gender_id = 2");
+    $categories = "";
+    while($row = fetch_array($select_category)) {
+        $categories .= "<ul class='list-group cat_man'>{$row['title']}";
+        $select_brand_name = query("SELECT brand_name FROM brands WHERE warderobe_id = {$row['id']}");
+        while($row2 = fetch_array($select_brand_name)) {
+            $categories .= "<li class='brand_man'>{$row2['brand_name']}</li>";
+        }
+         $categories .= "</ul>";
+    }
+    echo $categories;
 }
 
 function get_category_products() {
     global $connection;
-    $sql = "SELECT * FROM products WHERE product_category_id = " . mysqli_real_escape_string($connection, $_GET['id']);
+    $sql = "SELECT * FROM products WHERE product_warderobe_id = " . mysqli_real_escape_string($connection, $_GET['id']);
     $query = query($sql);
     confirm($query);
     while($row = fetch_array($query)) {
@@ -191,11 +198,11 @@ function get_all_products() {
         <div class='thumbnail'>
             <img src='../resources/{$path}' alt=''>
             <div class='caption'>
-                <h3>{$row['product_title']}</h3>
+                <h3 style='font-size:18px;'><b>{$row['product_title']}</b></h3>
                 <p>{$row['short_desc']}</p>
                 <p>";
                 if(isset($username)) {
-                    $products .= "<a href='../resources/cart.php?add={$row['product_id']}' class='btn btn-primary'>Buy Now!</a>"; 
+                    $product .= "<a href='../resources/cart.php?add={$row['product_id']}' class='btn btn-primary'>Buy Now!</a>"; 
                 }
                 $product .= "    
                     <a href='item.php?id={$row['product_id']}' class='btn btn-default'>More Info</a>
@@ -278,7 +285,7 @@ function num_products() {
 }
 
 function num_categories() {
-    $query = query("SELECT * FROM categories");
+    $query = query("SELECT * FROM warderobes");
     return mysqli_num_rows($query);
 }
 
@@ -304,7 +311,7 @@ function display_products_in_admin() {
     $query = query("SELECT * FROM products");
     confirm($query);
     while($row = fetch_array($query)) {
-        $category_title = display_product_category_title($row['product_category_id']);
+        $category_title = display_product_category_title($row['product_brand_id']);
         $brand_name = display_brand_title($row['product_brand_id']);
         $product = <<<DELIMETER
         <tr>
@@ -327,9 +334,13 @@ function get_add_product_warderobes() {
     $query = query("SELECT * FROM warderobes");
     confirm($query);
     while($row = fetch_array($query)) {
-        $category = <<<DELIMETER
-        <option value={$row['id']}>{$row['title']}</option>
-        DELIMETER;
+        $get_gender = query("SELECT * FROM genders WHERE id = {$row['gender_id']}");
+        confirm($get_gender);
+        while($row2 = fetch_array($get_gender)) {
+            $category = <<<DELIMETER
+            <option value={$row['id']}>{$row['title']}, {$row2['gender']}</option>
+            DELIMETER;
+        }
         echo $category;
     }
 }
@@ -338,7 +349,12 @@ function get_edit_product_categories($id) {
     $query = query("SELECT * FROM warderobes WHERE id != {$id}");
     confirm($query);
     while($row = fetch_array($query)) {
-        echo "<option value={$row['id']}>{$row['title']}</option>";
+        $get_edit_gender = query("SELECT * FROM genders WHERE id = {$row['gender_id']}");
+        confirm($get_edit_gender);
+        while($row2 = fetch_array($get_edit_gender)) {
+            $gender = $row2['gender'];
+        }
+        echo "<option value={$row['id']}>{$row['title']}, {$gender}</option>";
     }
 }
 
@@ -346,7 +362,17 @@ function get_add_product_brands() {
     $query = query("SELECT * FROM brands");
     confirm($query);
     while($row = fetch_array($query)) {
-        $brand = "<option value={$row['id']}>{$row['brand_name']}</option>";
+        $get_warderobes = query("SELECT * FROM warderobes WHERE id = {$row['warderobe_id']}");
+        confirm($get_warderobes);
+        while($row2 = fetch_array($get_warderobes)) {
+            $title = $row2['title'];
+            $get_gender = query("SELECT * FROM genders WHERE id = {$row2['gender_id']}");
+            confirm($get_gender);
+            while($row3 = fetch_array($get_gender)) {
+                $gender = $row3['gender'];
+            }
+        }
+        $brand = "<option value={$row['id']}> {$row['brand_name']}, {$title}, {$gender} </option>";
         echo $brand;
     }
 }
@@ -355,7 +381,18 @@ function get_edit_product_brands($brand_id) {
     $query = query("SELECT * FROM brands WHERE id != {$brand_id}");
     confirm($query);
     while($row = fetch_array($query)) {
-        echo "<option value={$row['id']}>{$row['brand_name']}</option>";
+        $get_warderobes = query("SELECT * FROM warderobes WHERE id = {$row['warderobe_id']}");
+        confirm($get_warderobes);
+        while($row2 = fetch_array($get_warderobes)) {
+            $title = $row2['title'];
+            $get_gender = query("SELECT * FROM genders WHERE id = {$row2['gender_id']}");
+            confirm($get_gender);
+            while($row3 = fetch_array($get_gender)) {
+                $gender = $row3['gender'];
+            }
+        }
+        $brand = "<option value={$row['id']}> {$row['brand_name']}, {$title}, {$gender} </option>";
+        echo $brand;
     }
 }
 
@@ -373,11 +410,9 @@ function add_product() {
 
             move_uploaded_file($image_tmp_location, UPLOAD_DIRECTORY.DS.$product_image);
 
-        $query = query("INSERT INTO products(product_title, product_category_id, product_brand_id, product_gender_id, product_price, product_quantity, product_description, short_desc, product_image, product_keywords) VALUES('{$product['product_title']}', {$product['product_category']}, {$product['product_brand']}, {$product['product_gender']}, {$product['product_price']}, {$product['product_quantity']}, '{$product_description}', '{$trim_short_desc}', '{$product_image}', '{$product['product_keywords']}')");
+        $query = query("INSERT INTO products(product_title, product_brand_id, product_price, product_quantity, product_description, short_desc, product_image, product_keywords) VALUES('{$product['product_title']}', {$product['product_brand']}, {$product['product_price']}, {$product['product_quantity']}, '{$product_description}', '{$trim_short_desc}', '{$product_image}', '{$product['product_keywords']}')");
         confirm($query);
         $last_id = last_id();
-        $add_to_categories = query("INSERT INTO categories(warderobe_id, brand_id, gender_id) VALUES({$product['product_category']}, {$product['product_brand']}, {$product['product_gender']})");
-        confirm($add_to_categories);
         set_message("New Product with ID of {$last_id} was just added!");
         redirect("index.php?products");
         }
@@ -404,7 +439,7 @@ function edit_product() {
     
         move_uploaded_file($image_tmp_location, UPLOAD_DIRECTORY.DS.$product_image);
 
-    $query = query("UPDATE products SET product_title = '{$product['product_title']}', product_category_id = {$product['product_category']}, product_brand_id = {$product['product_brand']}, product_gender_id = {$product['product_gender']}, product_description = '{$product_description}', product_price = {$product['product_price']}, product_quantity = {$product['product_quantity']}, short_desc = '{$trim_short_desc}', product_image = '{$product_image}', product_keywords = '{$product['product_keywords']}' WHERE product_id = " . $_GET['id']);
+    $query = query("UPDATE products SET product_title = '{$product['product_title']}', product_brand_id = {$product['product_brand']}, product_description = '{$product_description}', product_price = {$product['product_price']}, product_quantity = {$product['product_quantity']}, short_desc = '{$trim_short_desc}', product_image = '{$product_image}', product_keywords = '{$product['product_keywords']}' WHERE product_id = " . $_GET['id']);
     confirm($query);
 
     set_message("Product has been updated.");
@@ -428,10 +463,20 @@ function edit_user_admin() {
 }
 
 function display_product_category_title($product_category_id) {
-    $query = query("SELECT * FROM warderobes WHERE id = {$product_category_id}");
+    $query = query("SELECT * FROM brands WHERE id = {$product_category_id}");
     confirm($query);
     while($row = fetch_array($query)) {
-        return $row['title'];
+        $get_category = query("SELECT * FROM warderobes WHERE id = {$row['warderobe_id']}");
+        confirm($get_category);
+        while($row2 = fetch_array($get_category)) {
+            $title = $row2['title'];
+            $get_gender = query("SELECT * FROM genders WHERE id = {$row2['gender_id']}");
+            confirm($query);
+            while($row3 = fetch_array($get_gender)) {
+                $gender = $row3['gender'];
+            }
+        }
+        return $title . ", " . $gender;
     }
 }
 
@@ -439,7 +484,17 @@ function display_brand_title($brand_id) {
     $query = query("SELECT * FROM brands WHERE id = {$brand_id}");
     confirm($query);
     while($row = fetch_array($query)) {
-        return $row['brand_name'];
+        $get_warderobes = query("SELECT * FROM warderobes WHERE id = {$row['warderobe_id']}");
+        confirm($get_warderobes);
+        while($row2 = fetch_array($get_warderobes)) {
+            $title = $row2['title'];
+            $get_gender = query("SELECT * FROM genders WHERE id = {$row2['gender_id']}");
+            confirm($get_gender);
+            while($row3 = fetch_array($get_gender)) {
+                $gender = $row3['gender'];
+            }
+        }
+        return $row['brand_name'] . ", " . $title . ", " . $gender;
     }
 }
 
@@ -466,10 +521,21 @@ function display_brands() {
     $query = query("SELECT * FROM brands");
     confirm($query);
     while($row = fetch_array($query)) {
+        $get_category = query("SELECT * FROM warderobes WHERE id = {$row['warderobe_id']}");
+        confirm($get_category);
+        while($row2 = fetch_array($get_category)) {
+            $title = $row2['title'];
+            $get_gender = query("SELECT * FROM genders WHERE id = {$row2['gender_id']}");
+            confirm($get_gender);
+            while($row3 = fetch_array($get_gender)) {
+                $gender = $row3['gender'];
+            }
+        }
         $brand = "
         <tr>
             <td>{$row['id']}</td>
             <td>{$row['brand_name']}</td>
+            <td>{$title}, {$gender}</td>
             <td><a class='btn btn-danger' href='../../resources/templates/back/delete_brand.php?id={$row['id']}'>Delete</a></td>
         </tr>";
         echo $brand;
@@ -495,7 +561,8 @@ function create_brand() {
     if(isset($_POST['submit'])) {
         if(!empty($_POST['brand_name'])) {
             $name = $_POST['brand_name'];
-            $query = query("INSERT INTO brands(brand_name) VALUE('{$name}')");
+            $category = $_POST['brand_category'];
+            $query = query("INSERT INTO brands(brand_name, warderobe_id) VALUE('{$name}', {$category})");
             confirm($query);
             redirect("index.php?brands");
             set_message("New brand is created!");

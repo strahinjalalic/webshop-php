@@ -20,29 +20,12 @@
         <label for="product-price">Product Price</label>
         <input type="number" name="product_price" class="form-control" size="60">
       </div>
-      <div class="col-xs-4" style="float: right;">
-        <div class="custom-control custom-radio">
-              <label for="product_gender">Select Gender</label><br>
-              <?php $query = query("SELECT * FROM genders");
-                while($row = fetch_array($query)) { ?>
-                  <input type="radio" name="product_gender" value="<?php echo $row['id']; ?>" id="<?php echo $row['gender']; ?>" class="custom-control-input"> <?php echo $row['gender']; ?><br>
-              <?php } ?>
-          </div>
-      </div>
     </div>
 </div>
 
 <aside id="admin_sidebar" class="col-md-4">
      <div class="form-group">
         <input type="submit" name="publish" class="btn btn-primary btn-lg" value="Publish">
-    </div>
-  
-    <div class="form-group">
-      <label for="product_category">Product Category</label>
-      <select name="product_category" id="" class="form-control">
-          <option value="">Choose Category</option>
-          <?php get_add_product_warderobes(); ?>
-      </select>
     </div>
 
     <div class="form-group">

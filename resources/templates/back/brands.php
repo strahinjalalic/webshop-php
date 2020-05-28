@@ -11,6 +11,13 @@
             <label for="brand_name">Brand Name</label>
             <input type="text" name="brand_name" class="form-control">
         </div>
+        <div class="form-group">
+            <label for="brand_category">Brand Category</label>
+            <select name="brand_category" class="form-control">
+                <option value=""> Choose Category </option>
+                <?php get_add_product_warderobes(); ?>
+            </select>
+        </div>
         <div class="form-group">  
             <input type="submit" name="submit" class="btn btn-primary" value="Add Brand">
         </div>    
@@ -23,6 +30,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
+                    <th>Category</th>
                     <th>Delete</th>
                 </tr>
             </thead>
