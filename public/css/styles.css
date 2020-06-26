@@ -187,6 +187,11 @@ textarea#contact {
   color: black;
 }
 
+.brand_link {
+  color: black;
+  
+}
+
 .list_gender {
   border: 1px solid darkgrey;
   font-size: 18px;

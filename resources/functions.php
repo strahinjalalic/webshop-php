@@ -72,32 +72,35 @@ function get_products() {
         $page = 1;
     }
 
-    $per_page = 3;
+    $per_page = 5;
     $start_from = ($page-1) * $per_page;
 
     $sql = "SELECT * FROM products LIMIT {$start_from}, {$per_page}";
     $query = query($sql);
+    $product = "<div class='row'>";
     while($row = fetch_array($query)) {
         $path = display_image($row['product_image']);
         $description = substr($row['product_description'], 0, 80) . "...";
-        $product = "
-        <div class='col-sm-4 col-lg-4 col-md-4'>
-         <div class='thumbnail' id='lower_height'>
-            <img src='../resources/{$path}' width='50px' height='50px' alt=''>
-            <div class='caption'>
-                <h4 class='pull-right'>$ {$row['product_price']} </h4>
-                <h4><a href='item.php?id={$row['product_id']}'> {$row['product_title']} </a>
-                </h4>
-                <p> {$description} </p>";
-                if(isset($username)){
-                    $product .= "<a class='btn btn-primary' target='_blank' href='../resources/cart.php?add={$row['product_id']}'>Add To Cart</a>";
-                }
-                $product .= "
-            </div>
-         </div>
-        </div>";
-        echo $product;    
+        $product .= "
+            <div class='col-sm-4 col-lg-4 col-md-4'>
+                <div class='thumbnail' id='lower_height'>
+                    <img src='../resources/{$path}' width='50px' height='50px' alt=''>
+                    <div class='caption'>
+                        <h4 class='pull-right'>$ {$row['product_price']} </h4>
+                        <h4><a href='item.php?id={$row['product_id']}'> {$row['product_title']} </a>
+                        </h4>
+                        <p> {$description} </p>";
+                        if(isset($username)){
+                            $product .= "<a class='btn btn-primary' target='_blank' href='../resources/cart.php?add={$row['product_id']}'>Add To Cart</a>";
+                        }
+                        $product .= "
+                    </div>
+                </div>
+            </div>";   
     }
+    $product .= "</div>";
+    echo $product; 
+    
     echo "<div class='pagination'>";
     $count = count_products();
     $num_pages = ceil($count / $per_page);
@@ -141,7 +144,7 @@ function get_categories_man() {
         $categories .= "<ul class='list-group cat_man'>{$row['title']}";
         $select_brand_name = query("SELECT brand_name FROM brands WHERE warderobe_id={$row['id']}");
         while($row2 = mysqli_fetch_array($select_brand_name)){
-            $categories .= "<li class='brand_man'>{$row2['brand_name']}</li>";
+            $categories .= "<li class='brand_man'><a class='brand_link' href='shop.php?brand={$row2['brand_name']}&category={$row['title']}&gender=1'>{$row2['brand_name']}</a></li>";
         }
         $categories .= "</ul>";
     }
@@ -155,7 +158,7 @@ function get_categories_woman() {
         $categories .= "<ul class='list-group cat_man'>{$row['title']}";
         $select_brand_name = query("SELECT brand_name FROM brands WHERE warderobe_id = {$row['id']}");
         while($row2 = fetch_array($select_brand_name)) {
-            $categories .= "<li class='brand_man'>{$row2['brand_name']}</li>";
+            $categories .= "<li class='brand_man'><a class='brand_link' href='shop.php?brand={$row2['brand_name']}&category={$row['title']}&gender=2'>{$row2['brand_name']}</a></li>";
         }
          $categories .= "</ul>";
     }
@@ -188,24 +191,41 @@ function get_category_products() {
 }
 
 function get_all_products() {
-    $sql = "SELECT * FROM products";
-    $query = query($sql);
-    confirm($query);
-    while($row = fetch_array($query)) {
-        $path = display_image($row['product_image']);
+    global $username;
+
+    if(isset($_GET['brand']) && isset($_GET['category'])) {
+        if($_GET['gender'] == 1) {
+            $select_warderobe = query("SELECT id FROM warderobes WHERE title = '{$_GET['category']}' AND gender_id = 1");
+            $row = fetch_array($select_warderobe);
+            $warderobe_id = $row['id'];
+            $select_brand = query("SELECT id FROM brands WHERE brand_name = '{$_GET['brand']}' AND warderobe_id = {$warderobe_id}");
+            $row2 = fetch_array($select_brand);
+            $brand_id = $row2['id'];
+        } else {
+            $select_warderobe = query("SELECT id FROM warderobes WHERE title = '{$_GET['category']}' AND gender_id = 2");
+            $row = fetch_array($select_warderobe);
+            $warderobe_id = $row['id'];
+            $select_brand = query("SELECT id FROM brands WHERE brand_name = '{$_GET['brand']}' AND warderobe_id = {$warderobe_id}");
+            $row2 = fetch_array($select_brand);
+            $brand_id = $row2['id'];
+        }
+    }
+    $select_products = query("SELECT * FROM products WHERE product_brand_id = {$brand_id}");
+    while($row3 = fetch_array($select_products)){
+        $path = display_image($row3['product_image']);
         $product = "
         <div class='col-md-3 col-sm-6 hero-feature'>
         <div class='thumbnail'>
             <img src='../resources/{$path}' alt=''>
             <div class='caption'>
-                <h3 style='font-size:18px;'><b>{$row['product_title']}</b></h3>
-                <p>{$row['short_desc']}</p>
+                <h3 style='font-size:18px;'><b>{$row3['product_title']}</b></h3>
+                <p>{$row3['short_desc']}</p>
                 <p>";
                 if(isset($username)) {
-                    $product .= "<a href='../resources/cart.php?add={$row['product_id']}' class='btn btn-primary'>Buy Now!</a>"; 
+                    $product .= "<a href='../resources/cart.php?add={$row3['product_id']}' class='btn btn-primary'>Buy Now!</a>"; 
                 }
                 $product .= "    
-                    <a href='item.php?id={$row['product_id']}' class='btn btn-default'>More Info</a>
+                    <a href='item.php?id={$row3['product_id']}' class='btn btn-default'>More Info</a>
                 </p>
             </div>
         </div>
@@ -308,7 +328,15 @@ function display_orders() {
 }
 
 function display_products_in_admin() {
-    $query = query("SELECT * FROM products");
+    if(isset($_GET['page'])) {
+        $page = $_GET['page'];
+    } else {
+        $page = 1;
+    }
+
+    $per_page = 5;
+    $start_from = ($page-1) * $per_page;
+    $query = query("SELECT * FROM products LIMIT {$start_from}, {$per_page}");
     confirm($query);
     while($row = fetch_array($query)) {
         $category_title = display_product_category_title($row['product_brand_id']);
@@ -328,6 +356,40 @@ function display_products_in_admin() {
         DELIMETER;
         echo $product;
     }
+    echo "<div class='pagination'>";
+        $count = count_products();
+        $num_pages = ceil($count / $per_page);
+
+        if($page > 1) {
+            echo "<a href='index.php?products&page=".($page-1)."' class='next_prev'>Previous</a>";
+        } else {
+            echo "Page";
+        }
+
+        $tmp = array();
+        for($i=1; $i<=$num_pages; $i++) {
+            if($page == $i) {
+                $tmp[] = "<b id='bolded'>{$i}</b>";
+            } else {
+                $tmp[] = "<a href='index.php?products&page=".$i."' class='pagination_btn'>{$i}</a>";
+            }
+        }
+
+        $lastlink = 0;
+        foreach($tmp as $i => $link) {
+        if($i > $lastlink + 1) {
+            echo " ... ";
+        } elseif($i) {
+            echo " | ";
+        }
+        echo $link;
+        $lastlink = $i;
+        }
+
+        if($num_pages > $page) {
+            echo "<a href='index.php?products&page=".($page+1)."' class='next_prev'>Next</a>";
+        }
+    echo "</div>";
 }
 
 function get_add_product_warderobes() {

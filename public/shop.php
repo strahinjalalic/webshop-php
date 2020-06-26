@@ -1,30 +1,19 @@
 <?php 
 require_once('../resources/config.php');
-require_once(TEMPLATE_FRONT . DS . "header.php");
-?>
-    <!-- Page Content -->
-    <div class="container">
+require_once(TEMPLATE_FRONT . DS . "header.php"); ?>
 
-        <!-- Jumbotron Header -->
-        <header>
-            <h1>Shop</h1>
-        </header>
-
-        <hr>
-
-        <!-- Title -->
-        <div class="row">
-            <div class="col-lg-12">
-                <h3>Latest Products</h3>
-            </div>
+<div class="container">
+    <!-- <header>
+        <h1>Shop</h1>
+    </header> -->
+    <hr>
+    <div class="row">
+        <div class="col-lg-12">
+            <h3>Latest Products</h3>
         </div>
-        <!-- /.row -->
-
-        <!-- Page Features -->
-        <div class="row text-center">
-            <?php get_all_products(); ?>
-        </div>
-        <!-- /.row -->
-
-        <hr>
+    </div>
+    <div class="row text-center">
+        <?php get_all_products(); ?>
+    </div>
+    <hr>
 <?php require_once(TEMPLATE_FRONT . DS . "footer.php"); ?>     
