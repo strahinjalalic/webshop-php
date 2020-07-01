@@ -1,6 +1,7 @@
-<?php require_once('config.php');?>
+<?php require_once('config.php');
 
-<?php 
+\Stripe\Stripe::setApiKey(getenv('STRIPE_SK'));
+\Stripe\Stripe::setVerifySslCerts(false);
 
 if(isset($_GET['add'])) {
     $query = query('SELECT * FROM products WHERE product_id = ' . $_GET['add']);
@@ -79,13 +80,44 @@ function cart() {
   }
 }
 
-function show_paypal() {
+function stripe() {
     $paypal_button = <<<DELIMETER
     <input type="image" name="upload" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynow_LG.gif" alt="PayPal - The safer, easier way to pay online">
    DELIMETER;
 
   if(isset($_SESSION['total_items']) && $_SESSION['total_items'] >= 1)   {
     echo $paypal_button;
+    foreach($_SESSION as $product => $value) {
+        if(substr($product, 0, 8) == 'product_') {
+          $length = strlen($product); 
+          $id = substr($product, 8, $length);
+          $query = query("SELECT * FROM products WHERE product_id = {$id}");
+          while($row = fetch_array($query)) {
+              $product = \Stripe\Product::create([
+                'name' => "{$row['product_title']}",
+              ]);
+        
+              $price = \Stripe\Price::create([
+                'product' => "{$product['id']}",
+                'unit_amount' => "{$row['product_price']}",
+                'currency' => 'eur'
+              ]);
+        
+              $session = \Stripe\Checkout\Session::create([
+                'payment_method_types' => ['card'],
+                'line_items' => [[
+                  'price' => "{$price['id']}",
+                  'quantity' => "{$value}",
+                ]],
+                'mode' => 'payment',
+                'success_url' => "http://localhost/e-com-master/public/thank_you.php",
+                'cancel_url' => 'http://localhost/e-com-master/public/index.php',
+              ]);
+              
+              return $session['id'];
+          }
+        }
+    }
   }  
 }
 

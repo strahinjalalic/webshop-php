@@ -1,5 +1,5 @@
 <div class="col-md-3">
-    <p class="lead">Choose product</p>
+    <p class="lead">All Product Categories</p>
     <div class="list-group">
         <ul class="list-group list_gender" id='list_man'>Man
             <?php get_categories_man(); ?>

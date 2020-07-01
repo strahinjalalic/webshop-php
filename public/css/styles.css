@@ -181,6 +181,10 @@ textarea#contact {
   padding-left: 10px;
 }
 
+.cat_color {
+  color: maroon;
+}
+
 .brand_man {
   list-style-type: none;
   padding-left: 10px;

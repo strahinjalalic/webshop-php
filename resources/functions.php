@@ -1,19 +1,9 @@
 <?php 
-require 'C:\xampp\htdocs\e-com-master\vendor\autoload.php';
 
-// $dotenv = Dotenv\Dotenv::create(ENV);
-// $dotenv->load(); 
-
-// require '../vendor/autoload.php';
-
-$dotenv = Dotenv\Dotenv::createImmutable($_SERVER['DOCUMENT_ROOT'] . '/e-com-master/');
-$dotenv->load();
-
-
+use Mailgun\Mailgun;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
-
 $uploads = "uploads";
 
 if(isset($_SESSION['username'])) {
@@ -21,7 +11,6 @@ if(isset($_SESSION['username'])) {
 } else {
     $username = null;
 } 
-
 
 function redirect($location) {
     return header("Location: {$location}");
@@ -72,7 +61,7 @@ function get_products() {
         $page = 1;
     }
 
-    $per_page = 5;
+    $per_page = 9;
     $start_from = ($page-1) * $per_page;
 
     $sql = "SELECT * FROM products LIMIT {$start_from}, {$per_page}";
@@ -141,7 +130,7 @@ function get_categories_man() {
     $select_category = query("SELECT * FROM warderobes WHERE gender_id = 1");
     $categories = "";
     while($row = mysqli_fetch_assoc($select_category)) {
-        $categories .= "<ul class='list-group cat_man'>{$row['title']}";
+        $categories .= "<ul class='list-group cat_man'>{$row['title']}</a>";
         $select_brand_name = query("SELECT brand_name FROM brands WHERE warderobe_id={$row['id']}");
         while($row2 = mysqli_fetch_array($select_brand_name)){
             $categories .= "<li class='brand_man'><a class='brand_link' href='shop.php?brand={$row2['brand_name']}&category={$row['title']}&gender=1'>{$row2['brand_name']}</a></li>";
@@ -209,6 +198,9 @@ function get_all_products() {
             $row2 = fetch_array($select_brand);
             $brand_id = $row2['id'];
         }
+    } else {
+        echo "<h2>Nothing Found!</h2>";
+        return;
     }
     $select_products = query("SELECT * FROM products WHERE product_brand_id = {$brand_id}");
     while($row3 = fetch_array($select_products)){
@@ -275,7 +267,7 @@ function contact_send_message() {
         $mail->isSMTP();
         $mail->Host = getenv('APP_SMTP');
         $mail->SMTPAuth = true;
-        $mail->Username = getenv('APP_KEY');
+        $mail->Username = getenv('APP_USER');
         $mail->Password = getenv('APP_PASSWORD');
         $mail->SMTPSecure = 'tls';
         $mail->Port = 587;
@@ -692,7 +684,7 @@ function display_reports() {
             <td>{$row['report_id']}</td>
             <td>{$row['product_id']}</td>
             <td>{$row['order_id']}</td>
-            <td>$ {$row['product_price']}</td>
+            <td>{$row['product_price']}</td>
             <td>{$row['product_title']}</td>
             <td>{$row['product_quantity']}</td>
             <td><a class='btn btn-danger' href='../../resources/templates/back/delete_report.php?id={$row['report_id']}'>Delete</a></td>
