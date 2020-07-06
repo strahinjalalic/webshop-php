@@ -6,10 +6,9 @@ require_once(TEMPLATE_FRONT . DS . "header.php");
 
 <div class="container">
     <h1 class="text-center">THANK YOU FOR YOUR PURCHASE! </h1>
-        <?php  
+        <?php 
+            report();
             foreach($_SESSION as $product => $value) {
-                // echo $product . " ". "<br>";
-                // echo $value . "<br>";
                 if($value > 0) {
                     unset($_SESSION['total_amount']);
                     unset($_SESSION['total_items']);

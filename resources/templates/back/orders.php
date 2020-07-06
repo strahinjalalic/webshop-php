@@ -11,7 +11,6 @@
             <tr>
                 <th>ID</th>
                 <th>Order Amount</th>
-                <th>Order Transaction</th>
                 <th>Order Currency</th>
                 <th>Order Status</th>
                 <th>Delete</th>

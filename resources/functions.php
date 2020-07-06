@@ -309,7 +309,6 @@ function display_orders() {
         <tr>
             <td>{$row['order_id']}</td>
             <td>{$row['order_amount']}</td>
-            <td>{$row['order_transaction']}</td>
             <td>{$row['order_currency']}</td>
             <td>{$row['order_status']}</td>
             <td><a class='btn btn-danger' href='index.php?delete_order&id={$row['order_id']}'><span class='glyphicon glyphicon-remove-sign'></span></a></td>

@@ -68,13 +68,13 @@ function stripe_checkout() {
             "quantity" => $value,
           );
 
-         // print_r($line_items_array);
+         //print_r($line_items_array);
 
           $session = \Stripe\Checkout\Session::create([
             'payment_method_types' => ['card'],
             'line_items' => [$line_items_array],
             'mode' => 'payment',
-            'success_url' => "http://localhost/e-com-master/public/thank_you.php",
+            'success_url' => "http://localhost/e-com-master/public/thank_you.php?st=Completed&am={$_SESSION['total_amount']}&cc={$price['currency']}",
             'cancel_url' => "http://localhost/e-com-master/public/index.php",
           ]);
       }
@@ -111,11 +111,7 @@ function cart() {
                     <td><a class='btn btn-warning' href="../resources/cart.php?remove={$row['product_id']}"><span class='glyphicon glyphicon-minus'></span></a>  <a class='btn btn-success' href="../resources/cart.php?add={$row['product_id']}"><span class='glyphicon glyphicon-plus'></span></a>  <a class='btn btn-danger' href="../resources/cart.php?delete={$row['product_id']}"><span class='glyphicon glyphicon-remove'></span></a></td>
                   </tr>
                 DELIMETER;
-                echo $product;
-                // $item_name++;
-                // $item_number++;
-                // $amount++;
-                // $quantity++;  
+                echo $product; 
             }
             $_SESSION['total_amount'] = $total += $sub_total; //ceo racun
             $_SESSION['total_items'] = $total_items += $value; //ukupno item-a iz cart-a
@@ -127,49 +123,39 @@ function cart() {
 
 
 function report() {
-  if(isset($_GET['tx'])) { //paypal get parametri
+  if(isset($_GET['st'])) { 
     $amount = $_GET['am'];
     $status = $_GET['st'];
     $currency = $_GET['cc'];
-    $transaction = $_GET['tx'];
+    $total = 0;
+    $total_items = 0;
+    foreach($_SESSION as $name => $value) {
+      if($value > 0) {
+          if(substr($name, 0, 8) == 'product_') {
+              $length = strlen($name);
+              $id = substr($name, 8, $length);
+              $date = date('Y-m-d H:i:s');
 
-  $total = 0;
-  $total_items = 0;
-  foreach($_SESSION as $name => $value) {
-     if($value > 0) {
-        if(substr($name, 0, 8) == 'product_') {
-            $length = strlen($name - 8);
-            $id = substr($name, 8, $length);
+              $insert_order = query("INSERT INTO orders(order_amount, order_currency, order_status, order_time) VALUES('{$amount}', '{$currency}', '{$status}', '{$date}')");
+              $last_id = last_id();
+              confirm($insert_order);
 
-            $insert_order = query("INSERT INTO orders(order_amount, order_transaction, order_currency, order_status) VALUES('{$amount}', '{$transaction}', '{$currency}', '{$status}')");
-            $last_id = last_id();
-            confirm($insert_order);
+              $query = query('SELECT * FROM products WHERE product_id = '. $id);
+              confirm($query);
+              while($row = fetch_array($query)) {
+                  $product_price = $row['product_price'];
+                  $product_title = $row['product_title'];
+                  $sub_total = $product_price * $value;
+                  $total_items += $value;
 
-            $query = query('SELECT * FROM products WHERE product_id = '. $id);
-            confirm($query);
-            while($row = fetch_array($query)) {
-                $product_price = $row['product_price'];
-                $product_title = $row['product_title'];
-                $sub_total = $product_price * $value;
-                $total_items += $value;
-
-                $insert_report = query("INSERT INTO reports(order_id, product_id, product_title, product_price, product_quantity) VALUES('{$last_id}', '{$id}', '{$product_title}', '{$product_price}', '{$value}')");
-                confirm($insert_report);
-            }
-            $total += $sub_total;
-            // echo $total_items;
-        }
-    } 
+                  $insert_report = query("INSERT INTO reports(order_id, product_id, product_title, product_price, product_quantity) VALUES('{$last_id}', '{$id}', '{$product_title}', '{$product_price}', '{$total_items}')");
+                  confirm($insert_report);
+              }
+              $total += $sub_total;
+          }
+      } 
   }
-  // session_destroy(); => naci bolji nacin za destroy samo product_ sessiona
-} else {
-  redirect("index.php");
 }
 }
-
-// <input type="hidden" name="item_name_{$item_name}" value="{$row['product_title']}"> 
-// <input type="hidden" name="item_number_{$item_number}" value="{$row['product_id']}">
-// <input type="hidden" name="amount_{$amount}" value="{$row['product_price']}">
-// <input type="hidden" name="quantity_{$quantity}" value="{$value}">
 
 ?>

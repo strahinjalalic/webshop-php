@@ -32,7 +32,7 @@ require_once(TEMPLATE_FRONT . DS . "header.php");
             stripe.redirectToCheckout({
             sessionId: "<?php echo $session; ?>"
               }).then(function(result) {
-            console.log(result.error.message);
+              console.log(result.error.message);
               });
           });
         </script>    
