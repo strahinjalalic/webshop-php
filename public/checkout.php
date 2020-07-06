@@ -1,8 +1,8 @@
 <?php 
 require_once('../resources/config.php');
 require_once(TEMPLATE_FRONT . DS . "header.php");
-
 ?>
+
 <script src="https://js.stripe.com/v3/"></script>
 <div class="container">
     <div class="row">
@@ -21,15 +21,21 @@ require_once(TEMPLATE_FRONT . DS . "header.php");
             <?php cart(); ?>
           </tbody>
       </table>
-        <?php $session = stripe();?> 
+      <?php if(isset($_SESSION['total_items']) && $_SESSION['total_items'] >= 1) { ?>
+        <input type="image" name="checkout" id="checkout-button" src="../resources/uploads/buy_now.png" style="height: 70px;" />
+      <?php }  $session = stripe_checkout(); ?> 
         <script>
-          var stripe = Stripe(getenv('STRIPE_PK'));
-          stripe.redirectToCheckout({
+          var checkoutButton = document.getElementById('checkout-button');
+          var stripe = Stripe('pk_test_3U9OiFBxvIT0pYAFdOQ8WNTr008zbgMl80');
+
+          checkoutButton.addEventListener('click', function() {
+            stripe.redirectToCheckout({
             sessionId: "<?php echo $session; ?>"
-          }).then(function(result) {
+              }).then(function(result) {
             console.log(result.error.message);
+              });
           });
-        </script>            
+        </script>    
         <div class="col-xs-4 pull-right ">
           <h2>Total</h2>
             <table class="table table-bordered" cellspacing="0">

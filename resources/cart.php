@@ -35,6 +35,54 @@ if(isset($_GET['delete'])) {
     redirect('../public/checkout.php');
 }
 
+
+function stripe_checkout() {
+  foreach($_SESSION as $name => $value) {
+      //echo $name. "<br>" . $value . "<br>";
+      if($value > 0) {
+        if(substr($name, 0, 8) == 'product_') {
+          $length = strlen($name); 
+          $id = substr($name, 8, $length); 
+          $query = query("SELECT * FROM products WHERE product_id = " . $id);
+          confirm($query);
+          while($row = fetch_array($query)) {
+             //echo $row['product_id'];
+              $product = \Stripe\Product::create([
+                'name' => "{$row['product_title']}",
+                'images' => [
+                  "https://moto-d.net/wp-content/uploads/2018/01/webshop.jpg"
+                  ]
+              ]);
+              
+              $price_100 = $row['product_price'] * 100;
+
+              $price = \Stripe\Price::create([
+                'product' => "{$product['id']}",
+                'unit_amount' => "{$price_100}",
+                'currency' => 'eur'
+              ]);
+          }
+  
+          $line_items_array = array(
+            "price" => $price['id'],
+            "quantity" => $value,
+          );
+
+         // print_r($line_items_array);
+
+          $session = \Stripe\Checkout\Session::create([
+            'payment_method_types' => ['card'],
+            'line_items' => [$line_items_array],
+            'mode' => 'payment',
+            'success_url' => "http://localhost/e-com-master/public/thank_you.php",
+            'cancel_url' => "http://localhost/e-com-master/public/index.php",
+          ]);
+      }
+    }
+  }
+  return $session['id'];
+}
+
 function cart() {
   $total = 0;
   $total_items = 0;
@@ -43,6 +91,7 @@ function cart() {
   $amount = 1;
   $quantity = 1;
   foreach($_SESSION as $name => $value) {
+     //echo $name. "<br>" . $value . "<br>";
      if($value > 0) {
         if(substr($name, 0, 8) == 'product_') {
             $length = strlen($name); 
@@ -61,17 +110,12 @@ function cart() {
                     <td>$ {$sub_total}</td>
                     <td><a class='btn btn-warning' href="../resources/cart.php?remove={$row['product_id']}"><span class='glyphicon glyphicon-minus'></span></a>  <a class='btn btn-success' href="../resources/cart.php?add={$row['product_id']}"><span class='glyphicon glyphicon-plus'></span></a>  <a class='btn btn-danger' href="../resources/cart.php?delete={$row['product_id']}"><span class='glyphicon glyphicon-remove'></span></a></td>
                   </tr>
-                  <input type="hidden" name="item_name_{$item_name}" value="{$row['product_title']}"> 
-                  <input type="hidden" name="item_number_{$item_number}" value="{$row['product_id']}">
-                  <input type="hidden" name="amount_{$amount}" value="{$row['product_price']}">
-                  <input type="hidden" name="quantity_{$quantity}" value="{$value}">
                 DELIMETER;
                 echo $product;
-
-                $item_name++;
-                $item_number++;
-                $amount++;
-                $quantity++;
+                // $item_name++;
+                // $item_number++;
+                // $amount++;
+                // $quantity++;  
             }
             $_SESSION['total_amount'] = $total += $sub_total; //ceo racun
             $_SESSION['total_items'] = $total_items += $value; //ukupno item-a iz cart-a
@@ -80,46 +124,7 @@ function cart() {
   }
 }
 
-function stripe() {
-    $paypal_button = <<<DELIMETER
-    <input type="image" name="upload" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynow_LG.gif" alt="PayPal - The safer, easier way to pay online">
-   DELIMETER;
 
-  if(isset($_SESSION['total_items']) && $_SESSION['total_items'] >= 1)   {
-    echo $paypal_button;
-    foreach($_SESSION as $product => $value) {
-        if(substr($product, 0, 8) == 'product_') {
-          $length = strlen($product); 
-          $id = substr($product, 8, $length);
-          $query = query("SELECT * FROM products WHERE product_id = {$id}");
-          while($row = fetch_array($query)) {
-              $product = \Stripe\Product::create([
-                'name' => "{$row['product_title']}",
-              ]);
-        
-              $price = \Stripe\Price::create([
-                'product' => "{$product['id']}",
-                'unit_amount' => "{$row['product_price']}",
-                'currency' => 'eur'
-              ]);
-        
-              $session = \Stripe\Checkout\Session::create([
-                'payment_method_types' => ['card'],
-                'line_items' => [[
-                  'price' => "{$price['id']}",
-                  'quantity' => "{$value}",
-                ]],
-                'mode' => 'payment',
-                'success_url' => "http://localhost/e-com-master/public/thank_you.php",
-                'cancel_url' => 'http://localhost/e-com-master/public/index.php',
-              ]);
-              
-              return $session['id'];
-          }
-        }
-    }
-  }  
-}
 
 function report() {
   if(isset($_GET['tx'])) { //paypal get parametri
@@ -161,5 +166,10 @@ function report() {
   redirect("index.php");
 }
 }
+
+// <input type="hidden" name="item_name_{$item_name}" value="{$row['product_title']}"> 
+// <input type="hidden" name="item_number_{$item_number}" value="{$row['product_id']}">
+// <input type="hidden" name="amount_{$amount}" value="{$row['product_price']}">
+// <input type="hidden" name="quantity_{$quantity}" value="{$value}">
 
 ?>

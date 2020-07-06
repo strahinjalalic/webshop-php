@@ -1,7 +1,6 @@
-<?php require_once('../../resources/config.php'); ?>
-<?php include(TEMPLATE_BACK.DS.'header.php'); ?>
+<?php require_once('../../resources/config.php');
+include(TEMPLATE_BACK.DS.'header.php');
 
-<?php 
 if(isset($_SESSION['username'])) {
     $username = $_SESSION['username'];
 } else {
@@ -42,6 +41,30 @@ if(!isset($username) || !is_admin($username)) {
 
             if(isset($_GET['products'])) {
                 include(TEMPLATE_BACK.DS.'products.php');
+            }
+
+            if(isset($_GET['delete_product'])) {
+                include(TEMPLATE_BACK.DS.'delete_products.php');
+            }
+
+            if(isset($_GET['delete_category'])) {
+                include(TEMPLATE_BACK.DS.'delete_category.php');
+            }
+
+            if(isset($_GET['delete_brand'])) {
+                include(TEMPLATE_BACK.DS.'delete_brand.php');
+            }
+
+            if(isset($_GET['delete_report'])) {
+                include(TEMPLATE_BACK.DS.'delete_report.php');
+            }
+
+            if(isset($_GET['delete_slide'])) {
+                include(TEMPLATE_BACK.DS.'delete_slides.php');
+            }
+
+            if(isset($_GET['delete_order'])) {
+                include(TEMPLATE_BACK.DS.'delete_orders.php');
             }
 
             if(isset($_GET['categories'])) {

@@ -1,9 +1,15 @@
 <?php 
 ob_start();
 session_start();
+error_reporting(E_ALL & ~E_NOTICE);
 
-require_once('../vendor/autoload.php');
-require_once('../vendor/stripe/stripe-php/init.php');
+if($_SERVER['REQUEST_URI'] != '/e-com-master/public/admin/' AND $_SERVER['REQUEST_URI'] != '/e-com-master/public/admin/index.php' AND $_SERVER['REQUEST_URI'] != '/e-com-master/public/admin/index.php?products' AND $_SERVER['REQUEST_URI'] != '/e-com-master/public/admin/index.php?products&page='.$_GET['page'] AND $_SERVER['REQUEST_URI'] != '/e-com-master/public/admin/index.php?orders' AND $_SERVER['REQUEST_URI'] != '/e-com-master/public/admin/index.php?add_product' AND $_SERVER['REQUEST_URI'] != '/e-com-master/public/admin/index.php?add_user' AND $_SERVER['REQUEST_URI'] != '/e-com-master/public/admin/index.php?users' AND $_SERVER['REQUEST_URI'] != '/e-com-master/public/admin/index.php?categories' AND $_SERVER['REQUEST_URI'] != '/e-com-master/public/admin/index.php?brands' AND $_SERVER['REQUEST_URI'] != '/e-com-master/public/admin/index.php?reports' AND $_SERVER['REQUEST_URI'] != '/e-com-master/public/admin/index.php?slides' AND $_SERVER['REQUEST_URI'] != '/e-com-master/public/admin/index.php?edit_product&id=' . $_GET['id'] AND $_SERVER['REQUEST_URI'] != '/e-com-master/public/admin/index.php?edit_user&id='. $_GET['id'] AND $_SERVER['REQUEST_URI'] != '/e-com-master/public/admin/index.php?delete_product&id='.$_GET['id'] AND $_SERVER['REQUEST_URI'] != '/e-com-master/public/admin/index.php?delete_category&id='.$_GET['id'] AND $_SERVER['REQUEST_URI'] != '/e-com-master/public/admin/index.php?delete_brand&id='.$_GET['id'] AND $_SERVER['REQUEST_URI'] != '/e-com-master/public/admin/index.php?delete_order&id='.$_GET['id'] AND $_SERVER['REQUEST_URI'] != '/e-com-master/public/admin/index.php?delete_report&id='.$_GET['id'] AND $_SERVER['REQUEST_URI'] != '/e-com-master/public/admin/index.php?delete_slide&id='.$_GET['id']) {
+    require_once('../vendor/autoload.php');
+    require_once('../vendor/stripe/stripe-php/init.php');
+} else {
+    require_once('../../vendor/autoload.php');
+}
+
 $dotenv = Dotenv\Dotenv::createImmutable($_SERVER['DOCUMENT_ROOT'] . '/e-com-master/');
 $dotenv->load();
 

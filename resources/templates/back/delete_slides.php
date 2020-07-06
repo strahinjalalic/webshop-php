@@ -1,5 +1,5 @@
 <?php
-require_once("../../config.php");
+//require_once("../../config.php");
 
 if(isset($_GET['id'])) {
     $unlink_query = query("SELECT slide_image FROM slides WHERE slide_id = " . $_GET['id']);
@@ -12,6 +12,6 @@ if(isset($_GET['id'])) {
     $query = query("DELETE FROM slides WHERE slide_id = " . $_GET['id']);
     confirm($query);
     set_message("Slide deleted");
-    redirect("../../../public/admin/index.php?slides");
+    redirect("/e-com-master/public/admin/index.php?slides");
 }
 ?>

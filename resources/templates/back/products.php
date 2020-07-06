@@ -19,7 +19,7 @@
     </thead>
     <tbody>
       <?php display_products_in_admin(); ?>
-  </tbody>
+    </tbody>
 </table>
 </div>
 </div>

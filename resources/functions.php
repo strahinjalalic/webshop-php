@@ -312,7 +312,7 @@ function display_orders() {
             <td>{$row['order_transaction']}</td>
             <td>{$row['order_currency']}</td>
             <td>{$row['order_status']}</td>
-            <td><a class='btn btn-danger' href='../../resources/templates/back/delete_orders.php?id={$row['order_id']}'><span class='glyphicon glyphicon-remove-sign'></span></a></td>
+            <td><a class='btn btn-danger' href='index.php?delete_order&id={$row['order_id']}'><span class='glyphicon glyphicon-remove-sign'></span></a></td>
         </tr>
         DELIMETER;
         echo $order;
@@ -343,7 +343,7 @@ function display_products_in_admin() {
             <td>{$row['product_price']}</td>
             <td>{$row['product_quantity']}</td>
             <td><a class='btn btn-warning' href='index.php?edit_product&id={$row['product_id']}'>Edit</a></td>
-            <td><a class='btn btn-danger' href='../../resources/templates/back/delete_products.php?id={$row['product_id']}'>Delete</a></td>
+            <td><a class='btn btn-danger' href='index.php?delete_product&id={$row['product_id']}'>Delete</a></td>
         </tr>
         DELIMETER;
         echo $product;
@@ -565,7 +565,7 @@ function display_categories() {
                 } else {
                     $category .= "<td>Zenske</td>";
                 }
-                $category .= "<td><a class='btn btn-danger' href='../../resources/templates/back/delete_category.php?id={$row['id']}'>Delete</a></td>
+                $category .= "<td><a class='btn btn-danger' href='index.php?delete_category&id={$row['id']}'>Delete</a></td>
             </tr>";
             echo $category;
     }
@@ -590,7 +590,7 @@ function display_brands() {
             <td>{$row['id']}</td>
             <td>{$row['brand_name']}</td>
             <td>{$title}, {$gender}</td>
-            <td><a class='btn btn-danger' href='../../resources/templates/back/delete_brand.php?id={$row['id']}'>Delete</a></td>
+            <td><a class='btn btn-danger' href='index.php?delete_brand&id={$row['id']}'>Delete</a></td>
         </tr>";
         echo $brand;
     }
@@ -687,7 +687,7 @@ function display_reports() {
             <td>{$row['product_price']}</td>
             <td>{$row['product_title']}</td>
             <td>{$row['product_quantity']}</td>
-            <td><a class='btn btn-danger' href='../../resources/templates/back/delete_report.php?id={$row['report_id']}'>Delete</a></td>
+            <td><a class='btn btn-danger' href='index.php?delete_report&id={$row['report_id']}'>Delete</a></td>
         </tr>
         DELIMETER;
         echo $report;
@@ -759,7 +759,7 @@ function get_slide_thumbnails() {
         $path = display_image($row['slide_image']);
         $image_thumb = <<<DELIMETER
          <div class='col-xs-6 col-md-3 thumbnail_target'>
-            <a href='../../resources/templates/back/delete_slides.php?id={$row['slide_id']}'>
+            <a href='index.php?delete_slide&id={$row['slide_id']}'>
                 <img class='img-responsive slide_image' src='../../resources/{$path}'>
             </a>
          </div>
