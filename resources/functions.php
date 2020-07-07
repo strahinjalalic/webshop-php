@@ -766,4 +766,38 @@ function get_slide_thumbnails() {
         echo $image_thumb;
     }
 }
+
+function list_transactions() {
+    $query = query("SELECT * FROM orders");
+    confirm($query);
+    while($row = fetch_array($query)) {
+        $date = $row['order_time'];
+        $split = explode(" ", $date);
+        $orders = "<tr>
+                      <td>{$row['order_id']}</td> 
+                      <td>{$split[0]}</td>
+                      <td>{$split[1]}</td>
+                      <td>{$row['order_amount']}</td>
+                      <td>{$row['order_status']}</td>
+                   </tr>";
+
+        echo $orders;
+    }
+}
+
+function list_report_transactions() {
+    $query = query("SELECT * FROM reports");
+    confirm($query);
+    while($row = fetch_array($query)) {
+        $reports = "<tr>
+                      <td>{$row['report_id']}</td>
+                      <td>{$row['order_id']}</td>
+                      <td>{$row['product_title']}</td>
+                      <td>{$row['product_price']}</td>
+                      <td>{$row['product_quantity']}</td>  
+                    </tr>";
+
+        echo $reports;
+    }
+}
 ?>

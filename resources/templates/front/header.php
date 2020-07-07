@@ -14,6 +14,6 @@
     </head>
 
     <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-inverse navbar-fixed-top" id="nav_css" role="navigation">
     <?php require_once(TEMPLATE_FRONT . DS . 'top_nav.php'); ?>     
     </nav>

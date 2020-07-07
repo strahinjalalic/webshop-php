@@ -6,7 +6,7 @@ require_once(TEMPLATE_FRONT . DS . "header.php");
 <script src="https://js.stripe.com/v3/"></script>
 <div class="container">
     <div class="row">
-      <h1>Checkout</h1>
+      <h1>Cart</h1>
     <p class='text-center bg-danger'> <?php display_message(); ?> </p>
       <table class="table table-striped">
           <thead>
@@ -30,9 +30,10 @@ require_once(TEMPLATE_FRONT . DS . "header.php");
 
           checkoutButton.addEventListener('click', function() {
             stripe.redirectToCheckout({
-            sessionId: "<?php echo $session; ?>"
+            sessionId: "<?php echo $session['id']; ?>"
               }).then(function(result) {
               console.log(result.error.message);
+              console.log(<?php echo $session['line_items']; ?>);
               });
           });
         </script>    

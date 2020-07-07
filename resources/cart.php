@@ -61,26 +61,25 @@ function stripe_checkout() {
                 'unit_amount' => "{$price_100}",
                 'currency' => 'eur'
               ]);
-          }
-  
-          $line_items_array = array(
-            "price" => $price['id'],
-            "quantity" => $value,
-          );
 
-         //print_r($line_items_array);
+              $line_items_array = array();
+              $line_items_array['price'] = $price['id'];
+              $line_items_array['quantity'] = $value;
+            
+              print_r($line_items_array);
 
-          $session = \Stripe\Checkout\Session::create([
-            'payment_method_types' => ['card'],
-            'line_items' => [$line_items_array],
-            'mode' => 'payment',
-            'success_url' => "http://localhost/e-com-master/public/thank_you.php?st=Completed&am={$_SESSION['total_amount']}&cc={$price['currency']}",
-            'cancel_url' => "http://localhost/e-com-master/public/index.php",
-          ]);
+              $session = \Stripe\Checkout\Session::create([
+                'payment_method_types' => ['card'],
+                'line_items' => [$line_items_array],
+                'mode' => 'payment',
+                'success_url' => "http://localhost/e-com-master/public/thank_you.php?st=Completed&am={$_SESSION['total_amount']}&cc={$price['currency']}",
+                'cancel_url' => "http://localhost/e-com-master/public/index.php",
+              ]);
       }
     }
+    }
   }
-  return $session['id'];
+  return $session;
 }
 
 function cart() {

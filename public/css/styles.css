@@ -171,13 +171,13 @@ textarea#contact {
 
 #front_logout:link {
   padding-top: 12px;
-  color: #9d9d9d;
-  background-color: #333333;
+  color: #857777;
+  background-color: unset;
 }
 
 .cat_man {
   font-size: 14px;
-  color: maroon;
+  color: #4a5ff7;
   padding-left: 10px;
 }
 
@@ -186,14 +186,33 @@ textarea#contact {
 }
 
 .brand_man {
+  box-shadow: inset 0 0 0 0 #31302B;
+	-webkit-transition: all ease 0.8s;
+	-moz-transition: all ease 0.8s;
+	transition: all ease 0.8s;
   list-style-type: none;
   padding-left: 10px;
   color: black;
 }
 
+.brand_man:hover {
+  box-shadow: inset 100px 0 0 0 #fff;
+}
+
+@keyframes example {
+  0%  {background-color: #517670; left: 0; top: 0;}
+  25% {background-color: #2e53cc; left: 20%; top: 0;}
+  50% {background-color: #737ccf; left: 50%; top: 0;}
+  75% {background-color: rgb(82, 75, 112); left: 75%; top: 0;}
+  100% {background-color: aquamarine; left: 100%; top: 0;}
+}
+
 .brand_link {
   color: black;
-  
+}
+
+.nav_a:hover {
+  color: #737978;
 }
 
 .list_gender {
@@ -231,4 +250,22 @@ textarea#contact {
 
 .next_prev:hover {
   color: white;
+}
+
+#nav_css {
+  background-color: #258;
+}
+
+#nav_li {
+  color: snow;
+}
+
+#cart {
+  /* padding-left: 2710%; */
+  top: -4px;
+  color: #fff;
+}
+
+#cart:hover {
+  color: #1770ff;
 }
