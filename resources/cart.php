@@ -37,8 +37,9 @@ if(isset($_GET['delete'])) {
 
 
 function stripe_checkout() {
+  $line_items_array = array();
+  $final_array = array();
   foreach($_SESSION as $name => $value) {
-      //echo $name. "<br>" . $value . "<br>";
       if($value > 0) {
         if(substr($name, 0, 8) == 'product_') {
           $length = strlen($name); 
@@ -46,7 +47,6 @@ function stripe_checkout() {
           $query = query("SELECT * FROM products WHERE product_id = " . $id);
           confirm($query);
           while($row = fetch_array($query)) {
-             //echo $row['product_id'];
               $product = \Stripe\Product::create([
                 'name' => "{$row['product_title']}",
                 'images' => [
@@ -62,24 +62,25 @@ function stripe_checkout() {
                 'currency' => 'eur'
               ]);
 
-              $line_items_array = array();
               $line_items_array['price'] = $price['id'];
               $line_items_array['quantity'] = $value;
-            
-              print_r($line_items_array);
-
-              $session = \Stripe\Checkout\Session::create([
-                'payment_method_types' => ['card'],
-                'line_items' => [$line_items_array],
-                'mode' => 'payment',
-                'success_url' => "http://localhost/e-com-master/public/thank_you.php?st=Completed&am={$_SESSION['total_amount']}&cc={$price['currency']}",
-                'cancel_url' => "http://localhost/e-com-master/public/index.php",
-              ]);
+              array_push($final_array, $line_items_array);
+          }
+        }
       }
     }
+    if($_SESSION['total_items'] && $_SESSION['total_amount'] >= 1) {
+    $session = \Stripe\Checkout\Session::create([
+      'payment_method_types' => ['card'],
+      'billing_address_collection' => 'required',
+      'line_items' => $final_array,
+      'mode' => 'payment',
+      'success_url' => "http://localhost/e-com-master/public/thank_you.php?st=Completed&am={$_SESSION['total_amount']}&cc={$price['currency']}",
+      'cancel_url' => "http://localhost/e-com-master/public/index.php",
+    ]);
+
+    return $session;
     }
-  }
-  return $session;
 }
 
 function cart() {
@@ -90,7 +91,6 @@ function cart() {
   $amount = 1;
   $quantity = 1;
   foreach($_SESSION as $name => $value) {
-     //echo $name. "<br>" . $value . "<br>";
      if($value > 0) {
         if(substr($name, 0, 8) == 'product_') {
             $length = strlen($name); 
@@ -119,8 +119,6 @@ function cart() {
   }
 }
 
-
-
 function report() {
   if(isset($_GET['st'])) { 
     $amount = $_GET['am'];
@@ -128,16 +126,15 @@ function report() {
     $currency = $_GET['cc'];
     $total = 0;
     $total_items = 0;
+    $date = date('Y-m-d H:i:s');
+    $insert_order = query("INSERT INTO orders(order_amount, order_currency, order_status, order_time) VALUES('{$amount}', '{$currency}', '{$status}', '{$date}')");
+    $last_id = last_id();
+    confirm($insert_order);
     foreach($_SESSION as $name => $value) {
       if($value > 0) {
           if(substr($name, 0, 8) == 'product_') {
               $length = strlen($name);
               $id = substr($name, 8, $length);
-              $date = date('Y-m-d H:i:s');
-
-              $insert_order = query("INSERT INTO orders(order_amount, order_currency, order_status, order_time) VALUES('{$amount}', '{$currency}', '{$status}', '{$date}')");
-              $last_id = last_id();
-              confirm($insert_order);
 
               $query = query('SELECT * FROM products WHERE product_id = '. $id);
               confirm($query);

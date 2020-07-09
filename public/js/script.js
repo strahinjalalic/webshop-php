@@ -40,8 +40,8 @@ $(document).ready(function() {
         ev.stopPropagation();
     });
 
-    // $("#list_man").click(function() {
-    //     $(".cat_man").toggle(650);
-    // });
+    $('.ul_brand_man').click(function() {
+        $('.cat_man').hide();
+    });
 
 });
