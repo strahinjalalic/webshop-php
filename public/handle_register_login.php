@@ -93,6 +93,7 @@ if(isset($_POST['submit_login'])){
             $verify_pass = password_verify($password, $row['password']);
             if($verify_pass){
                 $_SESSION['username'] = $row['username'];
+                $_SESSION['u_id'] = $row['user_id'];
                 redirect('index.php');
             } else {
                 array_push($login_errors, 'Username or Password is incorrect!');    
