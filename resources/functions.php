@@ -130,7 +130,7 @@ function get_categories_man() {
     $select_category = query("SELECT * FROM warderobes WHERE gender_id = 1");
     $categories = "";
     while($row = mysqli_fetch_assoc($select_category)) {
-        $categories .= "<span class='ul_brand_man' onclick='showAndHide({$row['id']})'>{$row['title']}</span><ul class='list-group cat_man' id='click{$row['id']}'>";
+        $categories .= "<span class='ul_brand_man'>{$row['title']}</span><ul class='list-group cat_man' id='{$row['id']}'>";
         $select_brand_name = query("SELECT brand_name FROM brands WHERE warderobe_id={$row['id']}");
         while($row2 = mysqli_fetch_array($select_brand_name)){
             $categories .= "<li class='brand_man'><a class='brand_link' href='shop.php?brand={$row2['brand_name']}&category={$row['title']}&gender=1'>{$row2['brand_name']}</a></li>";
@@ -144,7 +144,7 @@ function get_categories_woman() {
     $select_category = query("SELECT * FROM warderobes WHERE gender_id = 2");
     $categories = "";
     while($row = fetch_array($select_category)) {
-        $categories .= "<ul class='list-group cat_man'>{$row['title']}";
+        $categories .= "<span class='ul_brand_man'>{$row['title']}</span><ul class='list-group cat_man' id='{$row['id']}'>";
         $select_brand_name = query("SELECT brand_name FROM brands WHERE warderobe_id = {$row['id']}");
         while($row2 = fetch_array($select_brand_name)) {
             $categories .= "<li class='brand_man'><a class='brand_link' href='shop.php?brand={$row2['brand_name']}&category={$row['title']}&gender=2'>{$row2['brand_name']}</a></li>";

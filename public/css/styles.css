@@ -179,6 +179,7 @@ textarea#contact {
   font-size: 14px;
   color: #4a5ff7;
   padding-left: 10px;
+  display: block;
 }
 
 .cat_color {
@@ -223,6 +224,9 @@ textarea#contact {
   font-size: 15px;
   padding-left: 10px;
   color: #4a5ff7;
+  padding-bottom: 5px;
+  display: block;
+  cursor: pointer;
 }
 
 .cat_man_a {

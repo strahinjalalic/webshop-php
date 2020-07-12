@@ -59,7 +59,9 @@ if(isset($_POST['save']) && $_POST['save'] == 1) {
                 </div>
                 <form action="">
                     <div class="form-group">
-                    <a class="btn btn-primary" target="_blank" href="../resources/cart.php?add=<?php echo $row['product_id'] ?>">Add To Cart</a>
+                        <?php if(isset($username)) { ?>
+                            <a class="btn btn-primary" target="_blank" href="../resources/cart.php?add=<?php echo $row['product_id'] ?>">Add To Cart</a>
+                        <?php } ?>
                     </div>
                 </form>
             </div>

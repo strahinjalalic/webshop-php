@@ -9,14 +9,14 @@ function generatePassword(length) {
     return result;
 }
 
-function showAndHide(id) {
-    var x = document.getElementById("click"+id);
-    if (x.style.display === "none") {
-      x.style.display = "block";
-    } else {
-      x.style.display = "none";
-    }
-}
+// function showAndHide(id) {
+//     if(document.getElementById(id).style.display == 'none')  {
+//         document.getElementById(id).style.display = 'block';
+//     } else {
+//         document.getElementById(id).style.display = 'none';
+//     }
+// }
+
 
 
 var ratedIndex = -1;
@@ -82,8 +82,14 @@ $(document).ready(function() {
     });
 
     $('.ul_brand_man').click(function() {
-        $('.cat_man').hide();
+        let id = $(this).next().attr('id');
+        if(document.getElementById(id).style.display == 'none') {
+            $('#'+id).toggle(500);
+        } else {
+           $('#'+id).toggle(500);
+        }
     });
+
     var productId = parseInt($('#product_id').val());
 
     if(localStorage.getItem('ratedIndex'+productId) != null) {
