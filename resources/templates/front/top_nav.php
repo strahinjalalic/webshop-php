@@ -23,17 +23,11 @@ if(isset($_SESSION['username'])) {
                     <li>
                         <a href="admin" class="nav_a">Admin</a>
                     </li>
-                    <!-- <?php //if(isset($_SESSION['total_items']) && $_SESSION['total_items'] >= 1) { ?>
-                        <li>
-                            <a href="checkout.php" id="cart"><i id='web_cart' class="fa fa-shopping-cart" aria-hidden="true"></i></a>
-                        </li>
-                   <?php //} ?> -->
                     </ul>
                     
                     <?php } if(isset($username)) { ?>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
-                            <!-- <i id='web_cart' class="fa fa-shopping-cart" aria-hidden="true"></i> -->
                             <li>
                                 <a href="checkout.php" id="cart"><img src="../resources/uploads/cart.png" width="23px" height="23px" alt=""></a>
                             </li>
@@ -66,10 +60,10 @@ if(isset($_SESSION['username'])) {
                         <img id="close" src="http://icon-library.com/images/close-icon/close-icon-5.jpg" height="22" width="22">
                         <h2 id="login_h2">Login form</h2>
                         <hr id='popup_form'>
-                        <input id="username_login" name="username_email" placeholder="Username or Email" type="text" value="<?php echo isset($username_email) ? $username_email : ""; ?>"><span id="email_icon"><i class="fas fa-envelope"></i></span>
-                        <input id="email_login" name="password" placeholder="Password" type="password"><span id="login_icons"><i class="fas fa-user-tie"></i></span>
-                        <p id='display_login_msg'><?php echo in_array("Username or Password is incorrect!", $login_errors) ? "Username or Password is incorrect!" : "";
-                        echo in_array("Username or Password is incorrect.", $login_errors) ? "Username or Password is incorrect!" : "";
+                        <input id="username" name="username" placeholder="Username or Email" type="text" value="<?php echo isset($username_email) ? $username_email : ""; ?>"><span id="email_icon"><i class="fas fa-envelope"></i></span>
+                        <input id="password" name="password" placeholder="Password" type="password"><span id="login_icons"><i class="fas fa-user-tie"></i></span>
+                        <p id='display_login_msg'><?php echo in_array("Username or Password is incorrect.", $login_errors) ? "Username or Password is incorrect." : "";
+                        echo in_array("Username or Password is incorrect!", $login_errors) ? "Username or Password is incorrect!" : "";
                         echo in_array("Enter password!", $login_errors) ? "Enter password!" : "";
                         echo in_array("Enter username or email!", $login_errors) ? "Enter username or email!" : ""; ?></p>
                         <button type="submit" id="submit_login" name="submit_login">Login</button>

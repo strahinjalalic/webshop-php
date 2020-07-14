@@ -9,16 +9,6 @@ function generatePassword(length) {
     return result;
 }
 
-// function showAndHide(id) {
-//     if(document.getElementById(id).style.display == 'none')  {
-//         document.getElementById(id).style.display = 'block';
-//     } else {
-//         document.getElementById(id).style.display = 'none';
-//     }
-// }
-
-
-
 var ratedIndex = -1;
 var userID = 0;
 function saveToDb() {
@@ -59,6 +49,29 @@ $(document).ready(function() {
         } else {
             input.attr("type", "password");
         }
+    });
+
+    $('form#form_login').submit(function() {
+        var response_p;
+        var p_text;
+        var p;
+        $.ajax({
+            type: 'POST',
+            url: 'index.php',
+            async: false,
+            data: $(this).serialize(),
+            dataType: "html",
+            success: function(response) {
+                response_p = $(response).find('#display_login_msg').text();
+                p_text = $('#display_login_msg').text(response_p);
+                localStorage.setItem('p_msg', p_text[0].innerText);
+                p = localStorage.getItem('p_msg');
+            }
+        });
+          if(p == '') {
+            return true;
+          }
+            return false;
     });
 
     $("#suggest_password").click(function() {

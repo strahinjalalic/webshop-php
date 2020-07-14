@@ -6,6 +6,7 @@
         "mailgun/mailgun-php": "^3.0",
         "kriswallsmith/buzz": "^1.1",
         "nyholm/psr7": "^1.3",
-        "stripe/stripe-php": "^7.39"
+        "stripe/stripe-php": "^7.39",
+        "nesbot/carbon": "^2.36"
     }
 }

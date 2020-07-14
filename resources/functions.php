@@ -4,6 +4,7 @@ use Mailgun\Mailgun;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
+use Carbon\Carbon;
 $uploads = "uploads";
 
 if(isset($_SESSION['username'])) {
@@ -768,7 +769,7 @@ function get_slide_thumbnails() {
 }
 
 function list_transactions() {
-    $query = query("SELECT * FROM orders");
+    $query = query("SELECT * FROM orders ORDER BY order_id DESC LIMIT 11");
     confirm($query);
     while($row = fetch_array($query)) {
         $date = $row['order_time'];
@@ -786,7 +787,7 @@ function list_transactions() {
 }
 
 function list_report_transactions() {
-    $query = query("SELECT * FROM reports");
+    $query = query("SELECT * FROM reports ORDER BY report_id DESC LIMIT 11");
     confirm($query);
     while($row = fetch_array($query)) {
         $reports = "<tr>
@@ -798,6 +799,49 @@ function list_report_transactions() {
                     </tr>";
 
         echo $reports;
+    }
+}
+
+function get_all_ratings() {
+    $get_all_ratings = query("SELECT * FROM ratings WHERE product_id = {$_GET['id']}");
+    confirm($get_all_ratings);
+    $count_ratings = mysqli_num_rows($get_all_ratings);
+    if($count_ratings > 0) {
+        echo " <h3>{$count_ratings} Reviews </h3>    
+        <hr>";
+    }
+
+    while($row = fetch_array($get_all_ratings)) {
+        $rating_stars = $row['rating'];
+        $rating = '';
+        if($rating_stars == 1) {
+            $rating = "<span class='glyphicon glyphicon-star'></span><span class='glyphicon glyphicon-star-empty'></span><span class='glyphicon glyphicon-star-empty'></span><span class='glyphicon glyphicon-star-empty'></span><span class='glyphicon glyphicon-star-empty'></span>";
+        } else if($rating_stars == 2) {
+            $rating =  "<span class='glyphicon glyphicon-star'></span><span class='glyphicon glyphicon-star'></span><span class='glyphicon glyphicon-star-empty'></span><span class='glyphicon glyphicon-star-empty'></span><span class='glyphicon glyphicon-star-empty'></span>";
+        } else if($rating_stars == 3) {
+            $rating = "<span class='glyphicon glyphicon-star'></span><span class='glyphicon glyphicon-star'></span><span class='glyphicon glyphicon-star'></span><span class='glyphicon glyphicon-star-empty'></span><span class='glyphicon glyphicon-star-empty'></span>";
+        } else if($rating_stars == 4) {
+            $rating =  "<span class='glyphicon glyphicon-star'></span><span class='glyphicon glyphicon-star'></span><span class='glyphicon glyphicon-star'></span><span class='glyphicon glyphicon-star'></span><span class='glyphicon glyphicon-star-empty'></span>";
+        } else {
+            $rating = "<span class='glyphicon glyphicon-star'></span><span class='glyphicon glyphicon-star'></span><span class='glyphicon glyphicon-star'></span><span class='glyphicon glyphicon-star'></span><span class='glyphicon glyphicon-star'></span>";
+        }
+
+        $get_username_ratings = query("SELECT first_name, last_name FROM users WHERE user_id = {$row['user_id']}");
+        confirm($get_username_ratings);
+        $full_date = Carbon::create($row['date_time'])->diffForHumans();
+        while($user = fetch_array($get_username_ratings)) {
+        $ratings = "
+        <div class='row'>
+            <div class='col-md-12'>
+                {$rating}
+                {$user['first_name']}&nbsp{$user['last_name']}
+                <span class='pull-right'>{$full_date}</span>
+                <p>{$row['rating_description']}</p>
+            </div>
+        </div>";
+
+    echo $ratings;
+        }
     }
 }
 

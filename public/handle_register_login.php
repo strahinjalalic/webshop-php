@@ -1,15 +1,18 @@
 <?php
 include("../vendor/autoload.php");
 
+$dotenv = Dotenv\Dotenv::createImmutable($_SERVER['DOCUMENT_ROOT'] . '/e-com-master/');
+$dotenv->load();
+
 $options = array(
     'cluster' => 'eu',
     'useTLS' => true
 );
 
 $pusher = new Pusher\Pusher(
-    '167c9c214517f32c90ce',
-    '296a6866df24ff130298',
-    '988007',
+    getenv('PUSHER_KEY'),
+    getenv('PUSHER_SECRET'),
+    getenv('PUSHER_ID'),
     $options
   );
 
@@ -81,30 +84,30 @@ if(isset($_POST['register_user'])) {
 }
 
 $login_errors = array();
-if(isset($_POST['submit_login'])){
-        if(!empty($_POST['username_email']) && !empty($_POST['password'])) {
-        $username_email = trim($_POST['username_email']);
-        $password = trim($_POST['password']);
+if(isset($_POST['username'])){
+    if(!empty($_POST['username']) && !empty($_POST['password'])) {
+    $username_email = trim($_POST['username']);
+    $password = trim($_POST['password']);
 
-        $sql = "SELECT * FROM users WHERE username = '{$username_email}' OR email = '{$username_email}'";
-        $send_query = query($sql);
-        confirm($send_query);
-        if($row = fetch_array($send_query)) {
-            $verify_pass = password_verify($password, $row['password']);
-            if($verify_pass){
-                $_SESSION['username'] = $row['username'];
-                $_SESSION['u_id'] = $row['user_id'];
-                redirect('index.php');
-            } else {
-                array_push($login_errors, 'Username or Password is incorrect!');    
-            }
+    $sql = query("SELECT * FROM users WHERE username = '{$username_email}' OR email = '{$username_email}'");
+    confirm($sql);
+    if($row = fetch_array($sql)) {
+        $verify_pass = password_verify($password, $row['password']);
+        if($verify_pass){
+            $_SESSION['username'] = $row['username'];
+            $_SESSION['u_id'] = $row['user_id'];
+            redirect('index.php');
         } else {
-            array_push($login_errors, 'Username or Password is incorrect.');    
-        } 
-        } else if(!empty($_POST['username_email']) && empty($_POST['password'])) {
-            $username_email = trim($_POST['username_email']);
-            array_push($login_errors, 'Enter password!');
-        } else {
-        array_push($login_errors, 'Enter username or email!');
+            array_push($login_errors, 'Username or Password is incorrect!');    
         }
-} ?>
+    } else {
+        array_push($login_errors, 'Username or Password is incorrect.');    
+    } 
+    } else if(!empty($_POST['username']) && empty($_POST['password'])) {
+        $username_email = trim($_POST['username']);
+        array_push($login_errors, 'Enter password!');
+    } else {
+    array_push($login_errors, 'Enter username or email!');
+    }
+} 
+?>
