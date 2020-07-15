@@ -9,17 +9,17 @@ if(isset($_POST['save']) && $_POST['save'] == 1) {
     $date_time = date('Y-m-d H:i:s');
 
     if(!$user_id) {
-        $query = query("INSERT INTO ratings(user_id, product_id, rating, date_time ) VALUES({$_SESSION['u_id']}, {$product_id}, {$rated_index}, '{$date_time}')");
+        $query = query("INSERT INTO ratings(user_id, product_id, rating, date_time) VALUES({$_SESSION['u_id']}, {$product_id}, {$rated_index}, '{$date_time}')");
         $last_id = query("SELECT user_id FROM ratings ORDER BY id DESC LIMIT 1");
         $user_data = fetch_array($last_id);
         $user_id = $user_data['user_id'];
     } else {
         $query = query("UPDATE ratings SET ratedIndex = {$rated_index} WHERE user_id = {$user_id}");
     }
-    exit(json_encode(array('user_id' => $user_id)));
+    //exit(json_encode(array('user_id' => $user_id)));
+    echo "<input type='hidden' id='user_id' value={$user_id}>";
 }
 ?>
-
 <div class="container">
     <?php require_once(TEMPLATE_FRONT . DS . 'side_nav.php'); ?>
 <div class="col-md-9">
@@ -48,13 +48,20 @@ if(isset($_POST['save']) && $_POST['save'] == 1) {
                       $count_rating = $fetch['total'];
                       ($count_all > 0) ? $avg = $count_rating / $count_all : '';   ?>
                     <p>
-                        <i class="fa fa-star" aria-hidden="true" data-index="1"></i>
-                        <i class="fa fa-star" aria-hidden="true" data-index="2"></i>
-                        <i class="fa fa-star" aria-hidden="true" data-index="3"></i>
-                        <i class="fa fa-star" aria-hidden="true" data-index="4"></i>
-                        <i class="fa fa-star" aria-hidden="true" data-index="5"></i>
-                        <input type="hidden" name="product_id" id="product_id" value="<?php echo $row['product_id']; ?>">
-                        <?php echo ($avg > 0) ?  round($avg, 1) . " stars" : "0 stars" ?>
+                        <?php if(isset($username)): ?>
+                            <i class="fa fa-star" aria-hidden="true" data-index="1"></i>
+                            <i class="fa fa-star" aria-hidden="true" data-index="2"></i>
+                            <i class="fa fa-star" aria-hidden="true" data-index="3"></i>
+                            <i class="fa fa-star" aria-hidden="true" data-index="4"></i>
+                            <i class="fa fa-star" aria-hidden="true" data-index="5"></i>
+                            <input type="hidden" name="product_id" id="product_id" value="<?php echo $row['product_id']; ?>">
+                        <?php else: ?>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                        <?php endif; echo ($avg > 0) ?  round($avg, 1) . " stars" : "0 stars" ?>
                     </p>
                 </div>
                 <form action="">
@@ -101,7 +108,7 @@ if(isset($_POST['save']) && $_POST['save'] == 1) {
                 </div>
                 <div class="form-group">
                     <input type="submit" class="btn btn-primary" value="SUBMIT">
-                </div> <?php  }?>
+                </div> <?php } ?>
             </form>
         </div>
         </div>

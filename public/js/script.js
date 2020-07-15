@@ -11,33 +11,6 @@ function generatePassword(length) {
 
 var ratedIndex = -1;
 var userID = 0;
-function saveToDb() {
-    $.ajax({
-        url: 'item.php',
-        type: 'POST',
-        dataType: 'json',
-        data: {
-            save: 1,
-            userID: userID,
-            ratedIndex: ratedIndex,
-            productId: localStorage.getItem('productId')
-        },
-        success: function(response) {
-            localStorage.setItem('userID', response.user_id); //ne salje sa fronta user_id iako ga loguje i pamti ?
-        },
-    });
-}
-
-function starResetColor() {
-    $('.fa-star').css('color', '#d17581')
-}
-
-function setStar(max) {
-    for(var i=0; i < max; i++) {
-        $('.fa-star:eq('+i+')').css('color', '#FFD700');
-    }
-}
-
 
 $(document).ready(function() {
     starResetColor();
@@ -133,4 +106,35 @@ $(document).ready(function() {
         }
     });
 });
+
+function saveToDb() {
+    $.ajax({
+        url: 'item.php',
+        type: 'POST',
+        //async: false,
+        dataType: 'html',
+        data: {
+            save: 1,
+            userID: userID,
+            ratedIndex: ratedIndex,
+            productId: localStorage.getItem('productId')
+        },
+        success: function(response) {
+           var user_id = $(response).find('#user_id').val();
+           console.log(user_id);
+           //localStorage.setItem('userID', user_id);
+        }
+    });
+}
+
+function starResetColor() {
+    $('.fa-star').css('color', '#d17581')
+}
+
+function setStar(max) {
+    for(var i=0; i < max; i++) {
+        $('.fa-star:eq('+i+')').css('color', '#FFD700');
+    }
+}
+
 
