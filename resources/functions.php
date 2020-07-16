@@ -847,7 +847,7 @@ function get_all_ratings() {
 
 function update_ratings() {
     if(isset($_POST['submit_rating'])) {
-        $query = query("UPDATE ratings SET rating_description = '{$_POST['rating_desc']}' WHERE user_id = {$_SESSION['u_id']}");
+        $query = query("UPDATE ratings SET rating_description = '{$_POST['rating_desc']}' WHERE user_id = {$_SESSION['u_id']} AND product_id = {$_GET['id']}");
         confirm($query);
         header('Location:'.$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING']);
     }
