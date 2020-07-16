@@ -8,16 +8,13 @@ if(isset($_POST['save']) && $_POST['save'] == 1) {
     $rated_index = $_POST['ratedIndex'];
     $date_time = date('Y-m-d H:i:s');
 
-    if($user_id === '0') {
-        $query = query("INSERT INTO ratings(user_id, product_id, rating, date_time) VALUES({$_SESSION['u_id']}, {$product_id}, {$rated_index}, '{$date_time}')");
-        $last_id = query("SELECT user_id FROM ratings ORDER BY id DESC LIMIT 1");
-        $user_data = fetch_array($last_id);
-        $user_id = $user_data['user_id'];
+    $query = query("SELECT * FROM ratings WHERE user_id = {$_SESSION['u_id']} AND product_id = {$product_id}");
+    confirm($query);
+    if(mysqli_num_rows($query) > 0) {
+        $query = query("UPDATE ratings SET rating = {$rated_index} WHERE user_id = {$_SESSION['u_id']} AND product_id = {$product_id}");
     } else {
-        $query = query("UPDATE ratings SET ratedIndex = {$rated_index} WHERE user_id = {$user_id}");
+        $query = query("INSERT INTO ratings(user_id, product_id, rating, date_time) VALUES({$_SESSION['u_id']}, {$product_id}, {$rated_index}, '{$date_time}')");
     }
-    exit(json_encode(array('user_id' => $user_id)));
-    //echo "<input type='hidden' id='user_id' value='{$user_id}'>";
 }
 ?>
 <div class="container">

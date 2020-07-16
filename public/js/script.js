@@ -10,7 +10,6 @@ function generatePassword(length) {
 }
 
 var ratedIndex = -1;
-var userID = 0;
 
 $(document).ready(function() {
     starResetColor();
@@ -80,7 +79,6 @@ $(document).ready(function() {
 
     if(localStorage.getItem('ratedIndex'+productId) != null) {
         setStar(parseInt(localStorage.getItem('ratedIndex'+productId)));
-        //userID = localStorage.getItem('userID');
     }
 
     $('.fa-star').on('click', function() {
@@ -111,21 +109,11 @@ function saveToDb() {
     $.ajax({
         url: 'item.php',
         type: 'POST',
-        //async: false,
         dataType: 'json',
         data: {
             save: 1,
-            userID: userID,
             ratedIndex: ratedIndex,
             productId: localStorage.getItem('productId')
-        },
-        success: function(response) {
-           console.log(response.user_id);
-           userID = response.user_id
-           localStorage.setItem('userID', userID);
-        },
-        error: function (error) {
-            console.log(error);
         }
     });
 }
@@ -153,8 +141,8 @@ function liveSearch(value) {
         if(data == "") {
             $('.search_res_footer').html("");
             $('.search_res_footer').removeAttr('style');
-            // $('.search_res_footer').toggleClass('.search_res_footer_empty');
-            // $('.search_res_footer').toggleClass('.search_res_footer');
+            $('.search_res_footer').toggleClass('.search_res_footer_empty');
+            $('.search_res_footer').toggleClass('.search_res_footer');
         }
     });
 }
