@@ -80,7 +80,7 @@ $(document).ready(function() {
 
     if(localStorage.getItem('ratedIndex'+productId) != null) {
         setStar(parseInt(localStorage.getItem('ratedIndex'+productId)));
-        userID = localStorage.getItem('userID');
+        //userID = localStorage.getItem('userID');
     }
 
     $('.fa-star').on('click', function() {
@@ -112,7 +112,7 @@ function saveToDb() {
         url: 'item.php',
         type: 'POST',
         //async: false,
-        dataType: 'html',
+        dataType: 'json',
         data: {
             save: 1,
             userID: userID,
@@ -120,9 +120,12 @@ function saveToDb() {
             productId: localStorage.getItem('productId')
         },
         success: function(response) {
-           var user_id = $(response).find('#user_id').val();
-           console.log(user_id);
-           //localStorage.setItem('userID', user_id);
+           console.log(response.user_id);
+           userID = response.user_id
+           localStorage.setItem('userID', userID);
+        },
+        error: function (error) {
+            console.log(error);
         }
     });
 }
@@ -137,4 +140,30 @@ function setStar(max) {
     }
 }
 
+function liveSearch(value) {
+    $.post("ajax_search.php", {query: value}, function(data) {
+        if($('.search_res_footer_empty')[0]) {
+            $('.search_res_footer_empty').toggleClass('.search_res_footer');
+            $('.search_res_footer_empty').toggleClass('.search_res_footer_empty');
+        }
+        $('.search_res').html(data);
+        $('.search_res_footer').html("<a href='search.php?search=" + value + "'>See Results</a>");
+        $('.search_res_footer').css({"padding": "3px 9px 0px 0px", "height": "25px", "border": "1px solid #f1f1f1", "border-top": "none", "background-color": "skyblue", "text-align": "center", "font-size": "14px"});
 
+        if(data == "") {
+            $('.search_res_footer').html("");
+            $('.search_res_footer').removeAttr('style');
+            // $('.search_res_footer').toggleClass('.search_res_footer_empty');
+            // $('.search_res_footer').toggleClass('.search_res_footer');
+        }
+    });
+}
+
+$(document).click(function(e) { //kada se izlistaju live search rezultati, klikom sa strane nestaju
+    if(e.target.class != 'search_res' && e.target.id != 'search') {
+        $('.search_res').html("");
+        $('.search_res_footer').html("");
+        $('.search_res_footer').toggleClass('.search_res_footer_empty');
+        $('.search_res_footer').toggleClass('.search_res_footer');
+    }
+});

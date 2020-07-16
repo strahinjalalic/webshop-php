@@ -28,6 +28,7 @@ if(isset($_SESSION['username'])) {
                     <?php } if(isset($username)) { ?>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
+                        
                             <li>
                                 <a href="checkout.php" id="cart"><img src="../resources/uploads/cart.png" width="23px" height="23px" alt=""></a>
                             </li>
@@ -43,14 +44,23 @@ if(isset($_SESSION['username'])) {
                         <?php } else { ?>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
+                            
                             <li>
                                 <button id='popup'>Login</button>
                             </li>
                             <li>
                                 <a href="register.php">Register</a>
-                            </li>
+                        </li> <?php } ?>
+                        <div class="search_bar">
+                            <form action="search.php" method="GET" id="search_form">
+                                <input type="text" id="search" name="search" placeholder="Search..." onkeyup="liveSearch(this.value)" autocomplete="off">
+                                <div class="search"></div>
+                            </form>
+                            <div class="search_res"></div>
+                            <div class="search_res_footer_empty"></div>
+                            <div class="search_res_footer"></div>
+                        </div>
                         </ul>
-                        <?php } ?>
             </div>
         </div>
         <div id="body" style="overflow:hidden;">

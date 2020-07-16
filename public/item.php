@@ -8,7 +8,7 @@ if(isset($_POST['save']) && $_POST['save'] == 1) {
     $rated_index = $_POST['ratedIndex'];
     $date_time = date('Y-m-d H:i:s');
 
-    if(!$user_id) {
+    if($user_id === '0') {
         $query = query("INSERT INTO ratings(user_id, product_id, rating, date_time) VALUES({$_SESSION['u_id']}, {$product_id}, {$rated_index}, '{$date_time}')");
         $last_id = query("SELECT user_id FROM ratings ORDER BY id DESC LIMIT 1");
         $user_data = fetch_array($last_id);
@@ -16,17 +16,17 @@ if(isset($_POST['save']) && $_POST['save'] == 1) {
     } else {
         $query = query("UPDATE ratings SET ratedIndex = {$rated_index} WHERE user_id = {$user_id}");
     }
-    //exit(json_encode(array('user_id' => $user_id)));
-    echo "<input type='hidden' id='user_id' value={$user_id}>";
+    exit(json_encode(array('user_id' => $user_id)));
+    //echo "<input type='hidden' id='user_id' value='{$user_id}'>";
 }
 ?>
 <div class="container">
     <?php require_once(TEMPLATE_FRONT . DS . 'side_nav.php'); ?>
 <div class="col-md-9">
     <?php 
-        $sql = "SELECT * FROM products WHERE product_id = " . mysqli_real_escape_string($connection, $_GET['id']);
-        $query = query($sql);
-        while($row = fetch_array($query)):
+        $query = query("SELECT * FROM products WHERE product_id = {$_GET['id']}");
+        $confirm = confirm($query);
+        while($row = fetch_array($query)) {
             $path = display_image($row['product_image']);
     ?>
 <div class="row">
@@ -93,7 +93,7 @@ if(isset($_POST['save']) && $_POST['save'] == 1) {
             <?php get_all_ratings(); ?>
         </div>
         <div class="col-md-6">
-            <form action="" class="form-inline">
+            <form action="" method="POST" class="form-inline">
                 <h3>Your Rating</h3><br>
                 <?php if(!isset($_SESSION['username'])) {
                     echo "<div class='form-group'>
@@ -104,20 +104,25 @@ if(isset($_POST['save']) && $_POST['save'] == 1) {
                           </div>";
                         } else { ?>
                 <div class="form-group">
-                    <textarea name="" id="" cols="60" rows="10" class="form-control"></textarea>
+                    <textarea name="rating_desc" id="" cols="60" rows="10" class="form-control"></textarea>
                 </div>
                 <div class="form-group">
-                    <input type="submit" class="btn btn-primary" value="SUBMIT">
-                </div> <?php } ?>
+                    <input type="submit" name="submit_rating" class="btn btn-primary" value="SUBMIT">
+                </div> 
             </form>
+            <?php } update_ratings();  ?>
         </div>
         </div>
     </div>
   </div>
 </div>
+<?php } ?>
 </div>
-    <?php endwhile; ?>
 </div>
 </div>
-
-<?php require_once(TEMPLATE_FRONT . DS . "footer.php"); ?>
+<script src="https://kit.fontawesome.com/03abbca0a8.js" crossorigin="anonymous"></script>
+<script src="js/jquery.js"></script>
+<script src="js/script.js"></script>
+<script src="js/bootstrap.min.js"></script>
+</body>
+</html>

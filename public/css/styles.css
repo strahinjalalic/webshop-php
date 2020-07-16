@@ -295,3 +295,170 @@ textarea#contact {
 #cart:hover {
   color: #1770ff;
 }
+
+@import url('https://fonts.googleapis.com/css?family=Inconsolata:700');
+
+
+/* .search_bar, #search, .search {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+} */
+
+.search_bar {
+  position: absolute;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 250px;
+  height: 70px;
+}
+.search_bar .search {
+  position: absolute;
+  margin: auto;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 70px;
+  height: 70px;
+  background: #7395fa;
+  border-radius: 50%;
+  transition: all 1s;
+  z-index: 4;
+  box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.4);
+}
+.search_bar .search:hover {
+  cursor: pointer;
+}
+.search_bar .search::before {
+  content: "";
+  position: absolute;
+  margin: auto;
+  top: 22px;
+  right: 0;
+  bottom: 0;
+  left: 22px;
+  width: 12px;
+  height: 2px;
+  background: white;
+  transform: rotate(45deg);
+  transition: all 0.5s;
+}
+.search_bar .search::after {
+  content: "";
+  position: absolute;
+  margin: auto;
+  top: -5px;
+  right: 0;
+  bottom: 0;
+  left: -5px;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 2px solid white;
+  transition: all 0.5s;
+}
+.search_bar input[type="text"] {
+  font-family: "Inconsolata", monospace;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 45px;
+  height: 45px;
+  outline: none;
+  border: none;
+  background: #7395fa;
+  color: white;
+  text-shadow: 0 0 10px #7395fa;
+  padding: 0 80px 0 20px;
+  border-radius: 30px;
+  box-shadow: 0 0 10px 0 #7395fa, 0 5px 10px 8px #7395fa;
+  transition: all 1s;
+  opacity: 0;
+  z-index: 5;
+  font-weight: bolder;
+  letter-spacing: 0.1em;
+}
+.search_bar input[type="text"]:hover {
+  cursor: pointer;
+}
+.search_bar input[type="text"]:focus {
+  width: 250px;
+  opacity: 1;
+  cursor: text;
+}
+#search_form input:focus ~ .search{
+  right: -250px;
+  background: #151515;
+  z-index: 6;
+}
+#search_form input:focus ~ .search::before {
+  top: 0;
+  left: 0;
+  width: 25px;
+}
+#search_form input:focus ~ .search::after {
+  top: 0;
+  left: 0;
+  width: 25px;
+  height: 2px;
+  border: none;
+  background: white;
+  border-radius: 0%;
+  transform: rotate(-45deg);
+}
+.search_bar input::placeholder {
+  color: white;
+  opacity: 0.5;
+  font-weight: bolder;
+}
+
+.search_res_footer a{
+  text-decoration: none;
+}
+
+.display_product {
+  padding: 5px 5px 0px 5px;
+  height: 9vh;
+  border-bottom: 1px solid #d3d3d3;
+}
+
+.display_product:nth-of-type(1) {
+  margin-top: 25%;
+}
+
+.display_product a {
+  float: none;   
+}
+
+.display_product a:hover {
+  text-decoration: none;
+  background-color: #070a24;
+}
+
+.display_product:hover {
+  background-color: #070a24;
+  text-decoration: none;
+}
+
+.live_search_img img {
+  height: 50px;
+  border-radius: 50px;
+  margin: 1px 12px 0px 2px;
+  float: left;
+}
+
+.live_search_text {
+  background-color: transparent;
+}
+
+.live_search_text p{
+  margin-left: 7px;
+  font-size: 13px;
+}
